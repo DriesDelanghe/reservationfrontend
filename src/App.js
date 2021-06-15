@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Header from './components/header'
 import Reservation from "./pages/reservation";
 import Overview from "./pages/overview";
+import './App.css'
 
 function App() {
     return <Router>

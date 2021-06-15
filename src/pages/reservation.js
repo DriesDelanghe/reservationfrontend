@@ -12,6 +12,7 @@ const Reservation = () => {
     const [reservationDates, setReservationDates] = useState([{id:1, openingDate:'2021-07-06'}]);
     const [monthNames, setMonthNames] = useState([]);
     const [period, setPeriod] = useState([[]])
+    const [selectedDates, setSelectedDates] = useState([])
 
     //fetch the data from backend
     const fetchServerData = async(url) =>{
@@ -56,10 +57,20 @@ const Reservation = () => {
         setPeople(people.filter((person) => person.id !== id))
     }
 
+    const toggleDate = (id) => {
+        if(!selectedDates.find(object => object.id === id)){
+            const newDate = reservationDates.find(object => object.id === id)
+            console.log(newDate)
+            setSelectedDates([...selectedDates, newDate])
+            return;
+        }
+        setSelectedDates(selectedDates.filter(object => object.id !== id));
+    }
+
     return (
         <>
         <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}/>
-        <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period} />
+        <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period} toggleDate={toggleDate} />
         </>
     )
 };

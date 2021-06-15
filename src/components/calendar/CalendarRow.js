@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types'
 import CalendarField from "./CalendarField";
 
-const CalendarRow = ({ dates, referenceList, monthList }) => {
-
-    console.log(dates)
+const CalendarRow = ({dates, referenceList, monthList, toggleDate }) => {
 
     return (
         <tr className={'text-end'}>
-            {dates.map((date, index) => <CalendarField key={index} monthList={monthList} dateString={date} isClickable={
-                !!referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())
-            } />)}
+            {dates.map((date, index) => <CalendarField key={index} monthList={monthList} dateString={date}
+                isClickable={!!referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
+                reservationDate={referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
+                toggleDate={toggleDate}/>)}
         </tr>
     )
 };
@@ -17,5 +16,8 @@ const CalendarRow = ({ dates, referenceList, monthList }) => {
 export default CalendarRow;
 
 CalendarRow.propTypes = {
-    referenceList: PropTypes.array
+    referenceList: PropTypes.array,
+    monthList: PropTypes.array,
+    dates: PropTypes.array,
+    toggleDate: PropTypes.func
 }
