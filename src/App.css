@@ -34,7 +34,7 @@ td{
 
 /* CHECKED STYLES */
 [type=checkbox]:checked + .date {
-  border-radius: 15px;
+  border-radius: 10px;
   border: solid 1px rgba(78, 162, 126, 0.75);
   background-color: rgba(114, 231, 176, 0.5);
 }

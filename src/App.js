@@ -14,27 +14,42 @@ function App() {
     const baseUrl = `http://${RESTIP}:${port}/data`
 
     const [reservations, setReservations] = useState([])
+    const [showModal, setShowModal] = useState(false);
+    const [serverError, setServerError] = useState(``)
 
     const addReservation = async (object) => {
-        if (!reservations.find(object)){
-            const reservation = await submitData(object, `/reservation`);
-            setReservations([...reservations, reservation]);
+        if (!reservations.find(reservation => reservation === object)) {
+            const reservation = await submitData(object, `/reservation/`);
+            if (reservation) {
+                setReservations([...reservations, reservation]);
+            }
         }
     }
 
     const submitData = async (data, url) => {
-        const res = await fetch(baseUrl + url, {method: 'PUT', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(data)});
+        const res = await fetch(baseUrl + url, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (res.status !== 200) {
+            console.log(res.status)
+            setServerError(`unable to connect to server`)
+            return null;
+        }
+        setShowModal(false);
         const serverData = await res.json();
-        return data;
+        return serverData;
     }
 
     return <Router>
-            <Header/>
-            <Switch>
-                <Route exact path="/" component={Reservation} addReservation={addReservation} />
-                <Route exact path="/overview" component={Overview} />
-            </Switch>
-        </Router> ;
+        <Header/>
+        <Switch>
+            <Route exact path="/" render={() => <Reservation addReservation={addReservation} setShowModal={setShowModal}
+                                                             serverError={serverError} showModal={showModal}/>}/>
+            <Route exact path="/overview" component={Overview}/>
+        </Switch>
+    </Router>;
 }
 
 export default App;

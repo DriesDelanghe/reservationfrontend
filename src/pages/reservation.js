@@ -3,8 +3,9 @@ import NameComponent from '../components/NameComponent.js'
 import Calendar from '../components/calendar/Calendar'
 import EmailComponent from "../components/EmailComponent";
 import ErrorMessage from "../components/ErrorMessage";
+import ModalServerLoad from "../components/ModalServerLoad";
 
-const Reservation = ({addReservation}) => {
+const Reservation = ({addReservation, serverError, showModal, setShowModal}) => {
 
     //General Info about REST API
     const RESTIP = '192.168.0.140';
@@ -25,6 +26,7 @@ const Reservation = ({addReservation}) => {
     const [selectedDatesError, setSelectedDatesError] = useState(false);
     const [emailFormatError, setEmailFormatError] = useState(false);
 
+
     //fetch the data from backend
     const fetchServerData = async (url) => {
         const res = await fetch(baseUrl + url)
@@ -36,6 +38,7 @@ const Reservation = ({addReservation}) => {
     const submitStateData = async (data, url) => {
         const res = await fetch(baseUrl + url, {
             method: 'PUT',
+            mode: 'cors',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
@@ -72,7 +75,7 @@ const Reservation = ({addReservation}) => {
 
 
     const addPerson = (person) => {
-        const localid = people[people.length - 1] ? people[people.length - 1].id + 1 || 1 : 1;
+        const localid = people[people.length - 1] ? people[people.length - 1].localid + 1 || 1 : 1;
         const newPerson = {id: null, localid: localid, ...person};
         setPeople([...people, newPerson]);
         setPersonError(false);
@@ -99,29 +102,37 @@ const Reservation = ({addReservation}) => {
         setEmailFormatError(false);
     }
 
-    const checkSubmit = (e) => {
+    const checkSubmit = async (e) => {
         e.preventDefault();
+        setShowModal(true)
         const regex = /\S+@\S+\.\S+/;
         if (!people[0] || (!email.email && confirmation) || !selectedDates[0] || (!selectedDatesError && email.email && !regex.test(email.email))) {
             !people[0] ? setPersonError(true) : setPersonError(false);
             !email.email && confirmation ? setEmailError(true) : setEmailError(false);
             !selectedDates[0] ? setSelectedDatesError(true) : setSelectedDatesError(false);
-            !selectedDatesError && !regex.test(email.email) && email.email ? setEmailFormatError(true) : setEmailFormatError(false);
+            !emailError && !regex.test(email.email) && email.email ? setEmailFormatError(true) : setEmailFormatError(false);
+            window.scrollTo(0, 0)
             return
         }
-
+        console.log(`All data seems right to me!`)
+        const reservation = constructReservationObject();
+        addReservation(reservation);
     }
 
-    const doSubmit = async () => {
-        setPeople(await submitStateData(people, '/person'))
-
+    const constructReservationObject = () => {
+        const reservation = {id: null, openingDateList: selectedDates, personList: people, confirmation: confirmation}
+        if (confirmation) {
+            return {...reservation, email: email};
+        }
+        return reservation;
     }
 
     return (
         <>
-            {personError ? <ErrorMessage text={`Er moet minstens 1 persoon zijn opgegeven`}/> : null}
+            <ModalServerLoad show={showModal} serverError={serverError} setShow={setShowModal}/>
+            {personError ? <ErrorMessage text={`Er moet minstens 1 persoon worden opgegeven`}/> : null}
             <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}/>
-            {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum zijn aangeduid`}/> : null}
+            {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
             <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
                       toggleDate={toggleDate}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
