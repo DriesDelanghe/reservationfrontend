@@ -38,3 +38,17 @@ td{
   border: solid 1px rgba(78, 162, 126, 0.75);
   background-color: rgba(114, 231, 176, 0.5);
 }
+
+.error-message{
+  margin-top: 3rem;
+  margin-bottom: -2rem;
+}
+
+.dark-hover{
+  transition: all 0.3s ease-out;
+}
+
+.dark-hover:hover{
+  background-color: var(--bs-dark) !important;
+  color: var(--bs-danger)!important;
+}
