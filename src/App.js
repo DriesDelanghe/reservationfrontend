@@ -122,7 +122,7 @@ function App() {
     }
 
     return <Router>
-        <Header/>
+        <Header credentials={credentials}/>
         <Switch>
             <Route exact path={'/login'}
                    render={() => <LoginForm credentials={credentials} setCredentials={setCredentials}

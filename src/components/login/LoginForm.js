@@ -2,23 +2,32 @@ import LoginInput from "./LoginInput";
 
 const LoginForm = ({ credentials, setCredentials, performLogin }) => {
 
+    if (!credentials.role) {
+        return (
+            <form onSubmit={(e) => performLogin(e)}
+                  className={`container mx-auto mt-5 p-3 border shadow d-flex flex-column`}>
+                <label>
+                    <span>Email</span>
+                    <LoginInput type={`text`} name={`username`} placeholder={`Email`} setCredentials={setCredentials}
+                                credentials={credentials}/>
+                </label>
+                <label>
+                    <span>Wachtwoord</span>
+                    <LoginInput type={`password`} name={`password`} placeholder={`wachtwoord`}
+                                setCredentials={setCredentials} credentials={credentials}/>
+                </label>
+                <div className="container">
+                    <input type={`submit`} value={'Inloggen'} className={`btn btn-dark mt-3 ms-2`}/>
+
+                </div>
+            </form>
+        )
+    }
     return (
-        <div className={`container mx-auto mt-5 p-3 border shadow d-flex flex-column`}>
-            <label>
-                <span>Email</span>
-                <LoginInput type={`text`} name={`username`} placeholder={`Email`} setCredentials={setCredentials}
-                            credentials={credentials}/>
-            </label>
-            <label>
-                <span>Wachtwoord</span>
-                <LoginInput type={`password`} name={`password`} placeholder={`wachtwoord`}
-                            setCredentials={setCredentials} credentials={credentials}/>
-            </label>
-            <div className="container">
-                <button type={`button`} className={`btn btn-dark mt-3 ms-2`}
-                onClick={(e) => performLogin(e)}>
-                    Inloggen
-                </button>
+        <div className="container border mx-auto shadow-sm mt-5 p-3">
+            <h2 className="display-5 text-center">Ingelogd!</h2>
+            <div className="container d-flex justify-content-start">
+                <button className={'btn btn-secondary'}>Uitloggen</button>
             </div>
         </div>
     )
