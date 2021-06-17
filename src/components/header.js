@@ -7,7 +7,7 @@ const Header = ({credentials}) => {
         <nav className="navbar navbar-light bg-light">
             <div className="container-fluid d-flex justify-content-between">
                 <Link to="/" className="navbar-brand">Tjok Hove</Link>
-                {credentials.role ? <FaSignOutAlt /> : <FaSignInAlt />}
+                {credentials.role ? <FaSignOutAlt fontSize={26} className={`me-3`}/> : <FaSignInAlt fontSize={26} className={`me-3`}/>}
             </div>
         </nav>
     </header>
