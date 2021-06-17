@@ -7,12 +7,6 @@ import ModalServerLoad from "../components/ModalServerLoad";
 
 const Reservation = ({addReservation, serverError, showModal, setShowModal}) => {
 
-    //General Info about REST API
-    const RESTIP = '192.168.5.163';
-    const port = '8080'
-
-    const baseUrl = ``
-
     //different UseStates
     const [reservationDates, setReservationDates] = useState([{id: null, openingDate: '2021-07-06'}]);
     const [monthNames, setMonthNames] = useState([]);
@@ -29,14 +23,14 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
 
     //fetch the data from backend
     const fetchServerData = async (url) => {
-        const res = await fetch(baseUrl + url)
+        const res = await fetch(url)
         const data = await res.json();
         return data;
     }
 
     //submit data to the server
     const submitStateData = async (data, url) => {
-        const res = await fetch(baseUrl + url, {
+        const res = await fetch( url, {
             method: 'PUT',
             mode: 'cors',
             headers: {'Content-Type': 'application/json'},
@@ -49,7 +43,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
     //set monthNames to data received from server, only called on load
     useEffect(() => {
         const getMonthName = async () => {
-            const monthNamesServer = await fetchServerData(`/month`);
+            const monthNamesServer = await fetchServerData(`/data/month`);
             setMonthNames([...monthNamesServer]);
         }
         getMonthName();
@@ -58,7 +52,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
     //set openingDates to data received from server, only called on load
     useEffect(() => {
         const getReservationDates = async () => {
-            const reservationDatesServer = await fetchServerData(`/openingdates`);
+            const reservationDatesServer = await fetchServerData(`/data/openingdates`);
             setReservationDates(reservationDatesServer.filter(object => new Date(object.openingDate).getTime() > new Date().getTime()));
         }
         getReservationDates();
@@ -67,7 +61,8 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
     //set  period to data reveived from server, only called on load
     useEffect(() => {
         const getPeriod = async () => {
-            const periodServer = await fetchServerData(`/period`);
+            const periodServer = await fetchServerData(`/data/period`);
+            console.log(periodServer)
             setPeriod([...periodServer]);
         }
         getPeriod();
@@ -112,6 +107,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
             !selectedDates[0] ? setSelectedDatesError(true) : setSelectedDatesError(false);
             !emailError && !regex.test(email.email) && email.email ? setEmailFormatError(true) : setEmailFormatError(false);
             window.scrollTo(0, 0)
+        setShowModal(false)
             return
         }
         console.log(`All data seems right to me!`)
