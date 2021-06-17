@@ -8,10 +8,10 @@ import ModalServerLoad from "../components/ModalServerLoad";
 const Reservation = ({addReservation, serverError, showModal, setShowModal}) => {
 
     //General Info about REST API
-    const RESTIP = '192.168.0.140';
+    const RESTIP = '192.168.5.163';
     const port = '8080'
 
-    const baseUrl = `http://${RESTIP}:${port}/data`
+    const baseUrl = ``
 
     //different UseStates
     const [reservationDates, setReservationDates] = useState([{id: null, openingDate: '2021-07-06'}]);
@@ -58,7 +58,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
     //set openingDates to data received from server, only called on load
     useEffect(() => {
         const getReservationDates = async () => {
-            const reservationDatesServer = await fetchServerData(`/openingdates/all`);
+            const reservationDatesServer = await fetchServerData(`/openingdates`);
             setReservationDates(reservationDatesServer.filter(object => new Date(object.openingDate).getTime() > new Date().getTime()));
         }
         getReservationDates();
@@ -67,7 +67,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
     //set  period to data reveived from server, only called on load
     useEffect(() => {
         const getPeriod = async () => {
-            const periodServer = await fetchServerData(`/period/all`);
+            const periodServer = await fetchServerData(`/period`);
             setPeriod([...periodServer]);
         }
         getPeriod();
