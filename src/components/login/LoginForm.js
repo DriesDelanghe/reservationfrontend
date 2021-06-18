@@ -1,14 +1,14 @@
 import LoginInput from "./LoginInput";
 
-const LoginForm = ({ credentials, setCredentials, performLogin }) => {
+const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
 
-    if (!credentials.role) {
+    if (credentials.role === `ANONYMOUS`) {
         return (
             <form onSubmit={(e) => performLogin(e)}
                   className={`container mx-auto mt-5 p-3 border shadow d-flex flex-column`}>
                 <label>
-                    <span>Email</span>
-                    <LoginInput type={`text`} name={`username`} placeholder={`Email`} setCredentials={setCredentials}
+                    <span>Gebruikersnaam</span>
+                    <LoginInput type={`text`} name={`username`} placeholder={`Gebruikersnaam`} setCredentials={setCredentials}
                                 credentials={credentials}/>
                 </label>
                 <label>
@@ -27,7 +27,7 @@ const LoginForm = ({ credentials, setCredentials, performLogin }) => {
         <div className="container border mx-auto shadow-sm mt-5 p-3">
             <h2 className="display-5 text-center">Ingelogd!</h2>
             <div className="container d-flex justify-content-start">
-                <button className={'btn btn-secondary'}>Uitloggen</button>
+                <button className={'btn btn-secondary'} onClick={() => doLogout()}>Uitloggen</button>
             </div>
         </div>
     )

@@ -7,10 +7,10 @@ const Header = ({credentials, doLogout}) => {
         <nav className="navbar navbar-light bg-light">
             <div className="container-fluid d-flex justify-content-between">
                 <Link to="/" className="navbar-brand">Tjok Hove</Link>
-                {credentials.role ?
+                {credentials.role !== `ANONYMOUS` ?
                     <FaSignOutAlt color={"black"} fontSize={26} className={`me-3`} onClick={() => doLogout()}/>
                     :
-                    <Link to={'/login'}>
+                    <Link to={'/login'} className={`text-primary`}>
                         <FaSignInAlt fontSize={26} className={`me-3`}/>
                     </Link>
                 }

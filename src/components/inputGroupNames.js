@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import {useState} from 'react'
 
 
-const InputGroupNames = ({name1, name2, placeholder1, placeholder2, type, onAdd}) => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+const InputGroupNames = ({name1, name2, placeholder1, placeholder2, type, onAdd, firstName, setFirstName, lastName, setLastName , nameNotEmpty, setNameNotEmpty }) => {
+
 
 
     const onSubmit = (e) => {
@@ -25,7 +24,7 @@ const InputGroupNames = ({name1, name2, placeholder1, placeholder2, type, onAdd}
             return
         }
         onAdd( {firstName, lastName} );
-
+        setNameNotEmpty(false);
         setFirstName('')
         setLastName('')
     }
@@ -35,10 +34,10 @@ const InputGroupNames = ({name1, name2, placeholder1, placeholder2, type, onAdd}
             <div className="input-group w-auto col-10 col-md-8 col-lg-6">
                 <input id={name1} name={name1} value={firstName} onChange={(e) => {
                     setFirstName(e.target.value)
-                }} className={'form-control'} placeholder={placeholder1} type={type}/>
+                }} className={nameNotEmpty ? 'form-control alert-danger' : 'form-control'} placeholder={placeholder1} type={type}/>
                 <input id={name2} name={name2} value={lastName} onChange={(e) => {
                     setLastName(e.target.value)
-                }} className={'form-control'} placeholder={placeholder2}
+                }} className={nameNotEmpty ? 'form-control alert-danger' : 'form-control'} placeholder={placeholder2}
                             type={type}/>
             </div>
             <div className="d-flex justify-content-start mt-3 ps-2">

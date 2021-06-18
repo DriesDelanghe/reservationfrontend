@@ -1,9 +1,10 @@
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
 import Header from './components/header'
 import Reservation from "./pages/reservation";
-import Overview from "./pages/overview";
+import Overview from "./pages/Overview";
 import OffCanvasBottom from "./components/OffCanvasBottom";
 import LoginForm from "./components/login/LoginForm";
+import Confirmation from "./pages/Confirmation";
 import './App.css'
 import {useEffect, useState} from "react";
 import './bootstrapSettings.scss'
@@ -12,6 +13,7 @@ function App() {
 
     const baseUrl = `/data`
 
+    const history = useHistory();
     const [reservations, setReservations] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [serverError, setServerError] = useState(``)
@@ -98,7 +100,7 @@ function App() {
             return null;
         }
         setShowModal(false);
-        return await res.json();
+        history.push("./confirmation")
     }
 
     const signout = async () => {
@@ -107,7 +109,6 @@ function App() {
         }
         const res = await fetchWithCsrf('/logout', fetchOptions)
         await authenticate("anonymous", "Pr0t3ct3d_")
-        setCredentials({username: 'anonymous'});
     }
 
     async function refreshAuthentication() {
@@ -136,10 +137,11 @@ function App() {
         <Switch>
             <Route exact path={'/login'}
                    render={() => <LoginForm credentials={credentials} setCredentials={setCredentials}
-                                            performLogin={performLogin}/>}/>
+                                            performLogin={performLogin} doLogout={signout}/>}/>
             <Route exact path="/" render={() => <Reservation addReservation={addReservation} setShowModal={setShowModal}
                                                              serverError={serverError} showModal={showModal}/>}/>
             <Route exact path="/overview" component={Overview}/>
+            <Route exact path={"/confirmation"} component={Confirmation}/>
         </Switch>
         <OffCanvasBottom/>
     </Router>;

@@ -28,9 +28,9 @@ const LoginInput = ({ type, name, placeholder, setCredentials, credentials }) =>
             <div className="input-group">
                 <input type={inputType} placeholder={placeholder} className={`form-control`} name={name}
                        onChange={(e) => updatePassword(e.target.value)}/>
-                <span className="input-group-text">
-                    {passwordShow ? <FaEyeSlash onClick={() => setPasswordShow(false)}/> :
-                        <FaEye onClick={() => setPasswordShow(true)}/>}
+                <span className="input-group-text" onClick={() => setPasswordShow(!passwordShow)}>
+                    {passwordShow ? <FaEyeSlash/> :
+                        <FaEye/>}
                 </span>
             </div>
         )
