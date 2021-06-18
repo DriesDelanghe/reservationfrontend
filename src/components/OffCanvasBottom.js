@@ -1,32 +1,37 @@
 import {Link} from "react-router-dom";
+import {useState} from "react";
 
 const OffCanvasBottom = () => {
 
-    return(
-        <div className="offcanvas offcanvas-bottom show" tabIndex="-1" id="offcanvasBottom"
-             data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="offcanvasBottomLabel">
-            <div className="offcanvas-header">
-                <h5 className="offcanvas-title" id="offcanvasBottomLabel">Inloggen</h5>
-                <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas"
-                        aria-label="Close">
+    const [shown, setShown] = useState(true)
 
-                </button>
-            </div>
-            <div className="offcanvas-body small">
-                <p>Om je reservaties achteraf opnieuw te kunnen bekijken of te kunnen verwijderen moet ge ingelogd zijn</p>
-
-                <div className="container p-2 mx-auto d-flex justify-content-start">
-                <Link to={'/login'} className={`btn btn-secondary mx-2`}>
-                    Inloggen
-                </Link>
-                    <Link to={`/register`} className={`btn btn-secondary mx-2`}>
-                        Registreren
-                    </Link>
+    const onClickButton = (e) => {
+        e.preventDefault()
+        setShown(false)
+    }
+    if (shown) {
+        return (
+            <div className="container-fluid mx-0 border rounded-2 position-fixed bottom-0 p-3 bg-body">
+                <div className="container-fluid mx-0 d-flex justify-content-end">
+                    <button className="btn btn-close" onClick={(e) => onClickButton(e)}></button>
+                </div>
+                <div className="container mx-auto">
+                    <h2 className="display-6 fs-5">Hou je data bij</h2>
+                    <p className="lead fs-6">Vergeet je niet in te loggen of te registreren om je reservaties op latere
+                        datum opnieuw te kunnen bekijken.</p>
+                    <div className="container d-flex justify-content-start gap-3 mb-3">
+                        <Link to={"/login"} className={'btn btn-dark'} onClick={() => setShown(false)}>
+                            <span>Inloggen</span>
+                        </Link>
+                        <Link to={"/register"} className={'btn btn-dark'} onClick={() => setShown(false)}>
+                            <span>registreren</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>
-    )
-
+        )
+    }
+    return <></>
 }
 
 export default OffCanvasBottom;

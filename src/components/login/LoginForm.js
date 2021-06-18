@@ -1,10 +1,25 @@
 import LoginInput from "./LoginInput";
+import {useHistory} from "react-router-dom";
 
 const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
 
+    const history = useHistory()
+
+    const loginFunc = (e) => {
+        e.preventDefault();
+        performLogin().then(
+            (data) => {
+                console.log(data.role)
+                if (data.role === "USER") {
+                    history.push("/overview")
+                }
+            }
+        )
+    }
+
     if (credentials.role === `ANONYMOUS`) {
         return (
-            <form onSubmit={(e) => performLogin(e)}
+            <form onSubmit={(e) =>loginFunc(e)}
                   className={`container mx-auto mt-5 p-3 border shadow d-flex flex-column`}>
                 <label>
                     <span>Gebruikersnaam</span>

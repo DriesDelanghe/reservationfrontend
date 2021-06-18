@@ -6,7 +6,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import ModalServerLoad from "../components/ModalServerLoad";
 import {useHistory} from "react-router-dom";
 
-const Reservation = ({addReservation, serverError, showModal, setShowModal}) => {
+const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials}) => {
 
     const history = useHistory()
 
@@ -143,6 +143,13 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
 
     return (
         <>
+            {credentials.role && credentials.role !== `ANONYMOUS` ? <div className="container mx-auto d-flex justify-content-end mt-3">
+                <button className={`btn btn-dark`} onClick={(event => {
+                    event.preventDefault()
+                    history.push("/overview")
+                })}>Overzicht
+                </button>
+            </div> : null}
             <ModalServerLoad show={showModal} serverError={serverError} setShow={setShowModal}/>
             {personError ? <ErrorMessage text={`Er moet minstens 1 persoon worden opgegeven`}/> : null}
             <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}

@@ -52,8 +52,10 @@ function App() {
             console.log(`   async authenticate: received response ${JSON.stringify(body)}`);
             console.log("   async authenticate: done");
             setCredentials({username: body.username, role:body.role});
+            return {username: body.username, role:body.role};
         } catch (e) {
             console.log(`   async authenticate: ERROR ${JSON.stringify(e)}`);
+            return null;
         }
     }
 
@@ -70,11 +72,11 @@ function App() {
         return await fetch(url, optionsWithCredentials);
     }
 
-    const performLogin = async (e) => {
-        e.preventDefault();
+    const performLogin = async () => {
         if (credentials.username && credentials.password) {
             try {
-                await authenticate(credentials.username, credentials.password);
+                const data = await authenticate(credentials.username, credentials.password);
+                return data;
             } catch (error) {
                 console.error(error)
             }
@@ -128,6 +130,8 @@ function App() {
         }
     }
 
+    console.log(credentials.role === `ANONYMOUS`, `credential check`)
+
     return <Router>
         <Header credentials={credentials} doLogout={signout}/>
         <Switch>
@@ -135,11 +139,11 @@ function App() {
                    render={() => <LoginForm credentials={credentials} setCredentials={setCredentials}
                                             performLogin={performLogin} doLogout={signout}/>}/>
             <Route exact path="/" render={() => <Reservation addReservation={addReservation} setShowModal={setShowModal}
-                                                             serverError={serverError} showModal={showModal}/>}/>
-            <Route exact path="/overview" render={() => <Overview fetchWithCsrf={fetchWithCsrf}/>}/>
+                                                             serverError={serverError} showModal={showModal} credentials={credentials}/>}/>
+            <Route exact path="/overview" render={() => <Overview fetchWithCsrf={fetchWithCsrf} credentials={credentials}/>}/>
             <Route exact path={"/confirmation"} component={Confirmation}/>
         </Switch>
-        <OffCanvasBottom/>
+        {credentials.role === `ANONYMOUS` ? <OffCanvasBottom/> : null}
     </Router>;
 }
 
