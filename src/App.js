@@ -11,9 +11,6 @@ import './bootstrapSettings.scss'
 
 function App() {
 
-    const baseUrl = `/data`
-
-    const history = useHistory();
     const [reservations, setReservations] = useState([])
     const [showModal, setShowModal] = useState(false);
     const [serverError, setServerError] = useState(``)
@@ -21,7 +18,7 @@ function App() {
 
     const addReservation = async (object) => {
         if (!reservations.find(reservation => reservation === object)) {
-            const reservation = await submitData(object, `/reservation`);
+            const reservation = await submitData(object, `/data/reservation`);
             if (reservation) {
                 setReservations([...reservations, reservation]);
             }
@@ -93,14 +90,13 @@ function App() {
             body: JSON.stringify(data)
         }
 
-        const res = await fetchWithCsrf(baseUrl + url, fetchOptions);
+        const res = await fetchWithCsrf(url, fetchOptions);
         if (res.status !== 200) {
             console.log(res.status)
             setServerError(`unable to connect to server`)
             return null;
         }
         setShowModal(false);
-        history.push("./confirmation")
     }
 
     const signout = async () => {
@@ -140,7 +136,7 @@ function App() {
                                             performLogin={performLogin} doLogout={signout}/>}/>
             <Route exact path="/" render={() => <Reservation addReservation={addReservation} setShowModal={setShowModal}
                                                              serverError={serverError} showModal={showModal}/>}/>
-            <Route exact path="/overview" component={Overview}/>
+            <Route exact path="/overview" render={() => <Overview fetchWithCsrf={fetchWithCsrf}/>}/>
             <Route exact path={"/confirmation"} component={Confirmation}/>
         </Switch>
         <OffCanvasBottom/>

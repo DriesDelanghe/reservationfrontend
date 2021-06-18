@@ -4,8 +4,11 @@ import Calendar from '../components/calendar/Calendar'
 import EmailComponent from "../components/EmailComponent";
 import ErrorMessage from "../components/ErrorMessage";
 import ModalServerLoad from "../components/ModalServerLoad";
+import {useHistory} from "react-router-dom";
 
 const Reservation = ({addReservation, serverError, showModal, setShowModal}) => {
+
+    const history = useHistory()
 
     //different UseStates
     const [reservationDates, setReservationDates] = useState([{id: null, openingDate: '2021-07-06'}]);
@@ -125,6 +128,9 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal}) => 
         console.log(`All data seems right to me!`)
         const reservation = constructReservationObject();
         addReservation(reservation);
+        if (!showModal) {
+            history.push("/confirmation")
+        }
     }
 
     const constructReservationObject = () => {
