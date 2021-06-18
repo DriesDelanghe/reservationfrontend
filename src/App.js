@@ -27,8 +27,14 @@ function App() {
     }
 
     useEffect(async () => {
-        await authenticate("anonymous", "Pr0t3ct3d_")
+        console.log("useEffect: start");
+        if (!document.cookie) {
+            await authenticate("anonymous", "Pr0t3ct3d_")
+            return
+        }
+        refreshAuthentication();
     }, [])
+
 
     async function authenticate(username, password) {
         console.log(`   async authenticate: start ${username}`);
@@ -46,6 +52,7 @@ function App() {
             const body = await response.json();
             console.log(`   async authenticate: received response ${JSON.stringify(body)}`);
             console.log("   async authenticate: done");
+            setCredentials({username: body.username, role:body.role});
         } catch (e) {
             console.log(`   async authenticate: ERROR ${JSON.stringify(e)}`);
         }
@@ -68,38 +75,11 @@ function App() {
         e.preventDefault();
         if (credentials.username && credentials.password) {
             try {
-                const fetchOptions = {
-                    method: 'POST',
-                    redirect: 'follow',
-                    mode: 'same-origin',
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `username=${credentials.username}&password=${credentials.password}`
-                }
-                const res = await fetchWithCsrf('/login', fetchOptions);
-
-                await getAccountInfo();
+                await authenticate(credentials.username, credentials.password);
             } catch (error) {
                 console.error(error)
             }
         }
-    }
-
-    const getAccountInfo = async () => {
-        const cookie = document.cookie.match(new RegExp('XSRF-TOKEN=([^;]+)'));
-        const csrfToken = cookie && cookie[1];
-        const fetchOptions = {
-            method: 'GET',
-            'credentials': 'include',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                'X-XSRF-TOKEN': csrfToken
-            },
-        };
-        const res = await fetch('/protected/account', fetchOptions)
-        const data = await res.json();
-        setCredentials({username: data.username, role: data.role})
     }
 
     const submitData = async (data, url) => {
@@ -121,8 +101,38 @@ function App() {
         return await res.json();
     }
 
+    const signout = async () => {
+        const fetchOptions = {
+            method: 'POST'
+        }
+        const res = await fetchWithCsrf('/logout', fetchOptions)
+        await authenticate("anonymous", "Pr0t3ct3d_")
+        setCredentials({username: 'anonymous'});
+    }
+
+    async function refreshAuthentication() {
+        console.log(`   async refreshAuthentication: start`);
+        try {
+            const fetchOptions = {
+                method: 'GET',
+                'credentials': 'include',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            };
+            const response = await fetch(`/authenticate`, fetchOptions);
+            const body = await response.json();
+            console.log(`   async refreshAuthentication: received response ${JSON.stringify(body)}`);
+            setCredentials({username:body.username, role:body.role});
+            console.log("   async refreshAuthentication: done");
+        } catch (e) {
+            console.log(`   async refreshAuthentication: ERROR ${e}`);
+        }
+    }
+
     return <Router>
-        <Header credentials={credentials}/>
+        <Header credentials={credentials} doLogout={signout}/>
         <Switch>
             <Route exact path={'/login'}
                    render={() => <LoginForm credentials={credentials} setCredentials={setCredentials}
