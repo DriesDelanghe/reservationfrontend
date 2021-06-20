@@ -1,28 +1,38 @@
-import {BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, useHistory} from "react-router-dom";
 import Header from './components/header'
-import Reservation from "./pages/reservation";
+import Reservation from "./pages/Reservation";
 import Overview from "./pages/Overview";
 import OffCanvasBottom from "./components/OffCanvasBottom";
 import LoginForm from "./components/login/LoginForm";
 import Confirmation from "./pages/Confirmation";
+import LoginBanner from "./components/LoginBanner";
 import './App.css'
 import {useEffect, useState} from "react";
 import './bootstrapSettings.scss'
+import LoggedOut from "./pages/LoggedOut";
+import Registration from "./pages/Registration";
 
 function App() {
 
     const [reservations, setReservations] = useState([])
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
     const [serverError, setServerError] = useState(``)
     const [credentials, setCredentials] = useState({});
+    const [reservationObject, setReservationObject] = useState({});
 
     const addReservation = async (object) => {
         if (!reservations.find(reservation => reservation === object)) {
-            const reservation = await submitData(object, `/data/reservation`);
-            if (reservation) {
+            console.log(object)
+            console.log(object.id, `id reservation`)
+            const res = await submitData(object, `/data/reservation/${object.id ? object.id : ''}`);
+            if (res) {
+                const reservation = await res.json();
                 setReservations([...reservations, reservation]);
+                console.log(reservation, reservations)
             }
+            return res;
         }
+        return null;
     }
 
     useEffect(async () => {
@@ -34,6 +44,10 @@ function App() {
         refreshAuthentication();
     }, [])
 
+    const removeReservations = () => {
+        setReservations([]);
+        setReservationObject({});
+    }
 
     async function authenticate(username, password) {
         console.log(`   async authenticate: start ${username}`);
@@ -48,11 +62,14 @@ function App() {
                 },
             };
             const response = await fetch(`/authenticate`, fetchOptions);
+            if (!response.ok) {
+                return null
+            }
             const body = await response.json();
             console.log(`   async authenticate: received response ${JSON.stringify(body)}`);
             console.log("   async authenticate: done");
-            setCredentials({username: body.username, role:body.role});
-            return {username: body.username, role:body.role};
+            setCredentials({username: body.username, role: body.role});
+            return {username: body.username, role: body.role};
         } catch (e) {
             console.log(`   async authenticate: ERROR ${JSON.stringify(e)}`);
             return null;
@@ -79,6 +96,7 @@ function App() {
                 return data;
             } catch (error) {
                 console.error(error)
+                return null
             }
         }
     }
@@ -87,8 +105,10 @@ function App() {
 
         const fetchOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json;charset=utf-8',
-                'X-Requested-With': 'XMLHttpRequest'},
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: JSON.stringify(data)
         }
 
@@ -99,6 +119,7 @@ function App() {
             return null;
         }
         setShowModal(false);
+        return res;
     }
 
     const signout = async () => {
@@ -107,6 +128,7 @@ function App() {
         }
         const res = await fetchWithCsrf('/logout', fetchOptions)
         await authenticate("anonymous", "Pr0t3ct3d_")
+        removeReservations();
     }
 
     async function refreshAuthentication() {
@@ -123,7 +145,7 @@ function App() {
             const response = await fetch(`/authenticate`, fetchOptions);
             const body = await response.json();
             console.log(`   async refreshAuthentication: received response ${JSON.stringify(body)}`);
-            setCredentials({username:body.username, role:body.role});
+            setCredentials({username: body.username, role: body.role});
             console.log("   async refreshAuthentication: done");
         } catch (e) {
             console.log(`   async refreshAuthentication: ERROR ${e}`);
@@ -134,14 +156,31 @@ function App() {
 
     return <Router>
         <Header credentials={credentials} doLogout={signout}/>
+        <LoginBanner credentials={credentials}/>
         <Switch>
-            <Route exact path={'/login'}
-                   render={() => <LoginForm credentials={credentials} setCredentials={setCredentials}
-                                            performLogin={performLogin} doLogout={signout}/>}/>
-            <Route exact path="/" render={() => <Reservation addReservation={addReservation} setShowModal={setShowModal}
-                                                             serverError={serverError} showModal={showModal} credentials={credentials}/>}/>
-            <Route exact path="/overview" render={() => <Overview fetchWithCsrf={fetchWithCsrf} credentials={credentials}/>}/>
-            <Route exact path={"/confirmation"} component={Confirmation}/>
+            <Route exact path={'/login'}>
+                <LoginForm credentials={credentials} setCredentials={setCredentials}
+                           performLogin={performLogin} doLogout={signout} />
+            </Route>
+            <Route exact path={'/registration'} >
+                <Registration />
+            </Route>
+            <Route exact path={'/logout'}>
+                <LoggedOut credentials={credentials}/>
+            </Route>
+            <Route exact path="/">
+                <Reservation addReservation={addReservation} setShowModal={setShowModal}
+                             serverError={serverError} showModal={showModal}
+                             credentials={credentials}
+                             reservation={reservationObject}/>
+            </Route>
+            <Route exact path="/overview">
+                <Overview fetchWithCsrf={fetchWithCsrf} credentials={credentials}
+                          setReservation={setReservationObject}/>
+            </Route>
+            <Route exact path={"/confirmation"}>
+                <Confirmation />
+            </Route>
         </Switch>
         {credentials.role === `ANONYMOUS` ? <OffCanvasBottom/> : null}
     </Router>;

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import CalendarRow from "./CalendarRow";
 
-const Calendar = ({ reservationDates, monthNames, period, toggleDate }) => {
+const Calendar = ({ reservationDates, monthNames, period, toggleDate, selectedDates }) => {
 
     return (
         <div className={`container mx-auto mt-5 p-2 border shadow-sm rounded-2`}>
@@ -21,7 +21,7 @@ const Calendar = ({ reservationDates, monthNames, period, toggleDate }) => {
                 {period.map((array, index) => !!reservationDates.find(object =>
                     !!array.find(date => new Date(object.openingDate).getTime() === new Date(date).getTime())) ?
                     <CalendarRow key={`row${index}`} dates={array} monthList={monthNames}
-                    referenceList={reservationDates} toggleDate={toggleDate}/> : null)}
+                    referenceList={reservationDates} toggleDate={toggleDate} selectedDates={selectedDates}/> : null)}
                 </tbody>
             </table>
         </div>

@@ -9,8 +9,8 @@ const NameComponent = ({ onAdd, people, onRemove,  firstName, setFirstName, last
           <InputGroupNames placeholder1={'Voornaam'} placeholder2={'Achternaam'} name1={'firstName'} name2={'lastName'} onAdd={onAdd}
           firstName={firstName} lastName={lastName} setFirstName={setFirstName} setLastName={setLastName} nameNotEmpty={nameNotEmpty}
           setNameNotEmpty={setNameNotEmpty}/>
-        {people.map((person) => (
-            <NameText key={person.localid} person={person} onRemove={onRemove} />
+        {people.map((person, index) => (
+            <NameText key={index} person={person} onRemove={onRemove} />
         ))}
     </div>)
 }

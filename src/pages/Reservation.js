@@ -6,7 +6,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import ModalServerLoad from "../components/ModalServerLoad";
 import {useHistory} from "react-router-dom";
 
-const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials}) => {
+const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials, reservation}) => {
 
     const history = useHistory()
 
@@ -14,10 +14,10 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     const [reservationDates, setReservationDates] = useState([{id: null, openingDate: '2021-07-06'}]);
     const [monthNames, setMonthNames] = useState([]);
     const [period, setPeriod] = useState([[]])
-    const [selectedDates, setSelectedDates] = useState([])
-    const [people, setPeople] = useState([])
-    const [email, setEmail] = useState({id: null, email: ''})
-    const [confirmation, setConfirmation] = useState(false);
+    const [selectedDates, setSelectedDates] = useState(reservation.openingDateList || [])
+    const [people, setPeople] = useState(reservation.personList || [])
+    const [email, setEmail] = useState(reservation.email || {id: null, email: ''})
+    const [confirmation, setConfirmation] = useState(reservation.confirmation || false);
     const [personError, setPersonError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [selectedDatesError, setSelectedDatesError] = useState(false);
@@ -28,24 +28,11 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     const [lastName, setLastName] = useState('');
 
 
-
     //fetch the data from backend
     const fetchServerData = async (url) => {
         const res = await fetch(url)
         const data = await res.json();
         return data;
-    }
-
-    //submit data to the server
-    const submitStateData = async (data, url) => {
-        const res = await fetch(url, {
-            method: 'PUT',
-            mode: 'cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-        const serverData = await res.json();
-        return serverData;
     }
 
     //set monthNames to data received from server, only called on load
@@ -68,14 +55,13 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
                 return openingsDate.getTime() >= date.getTime();
             }));
         }
-        getReservationDates();
+        getReservationDates().then(r => setShowModal(false));
     }, []);
 
     //set  period to data reveived from server, only called on load
     useEffect(() => {
         const getPeriod = async () => {
             const periodServer = await fetchServerData(`/data/period`);
-            console.log(periodServer)
             setPeriod([...periodServer]);
         }
         getPeriod();
@@ -90,7 +76,12 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     }
 
     const removePerson = (id) => {
-        setPeople(people.filter((person) => person.localid !== id))
+        setPeople(people.filter((person) => {
+            if (person.id != null){
+                return person.id !== id;
+            }
+            return person.localid !== id
+        }))
     }
 
     const toggleDate = (id) => {
@@ -115,7 +106,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         setShowModal(true)
         const regex = /\S+@\S+\.\S+/;
         if (!people[0] || (!email.email && confirmation) || !selectedDates[0] || (!selectedDatesError && email.email && !regex.test(email.email))
-        ||lastName || firstName ) {
+            || lastName || firstName) {
             !people[0] ? setPersonError(true) : setPersonError(false);
             !email.email && confirmation ? setEmailError(true) : setEmailError(false);
             !selectedDates[0] ? setSelectedDatesError(true) : setSelectedDatesError(false);
@@ -127,37 +118,58 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         }
         console.log(`All data seems right to me!`)
         const reservation = constructReservationObject();
-        addReservation(reservation);
-        if (!showModal) {
+        const res = await addReservation(reservation);
+        console.log(res)
+        if (res && res.ok) {
             history.push("/confirmation")
         }
     }
 
     const constructReservationObject = () => {
-        const reservation = {id: null, openingDateList: selectedDates, personList: people, confirmation: confirmation}
-        if (confirmation) {
-            return {...reservation, email: email};
+        let object;
+        if (reservation && reservation.id) {
+            console.log(`constructing reservation with id`)
+            object = {
+                ...reservation,
+                openingDateList: selectedDates,
+                personList: people,
+                confirmation: confirmation
+            }
+        } else {
+            console.log(`constructing new object`)
+            object = {
+                id: null,
+                openingDateList: selectedDates,
+                personList: people,
+                confirmation: confirmation
+            }
         }
-        return reservation;
+        if (confirmation) {
+            return {...object, email: email, confirmation: confirmation};
+        }
+        return object;
     }
+
 
     return (
         <>
-            {credentials.role && credentials.role !== `ANONYMOUS` ? <div className="container mx-auto d-flex justify-content-end mt-3">
-                <button className={`btn btn-dark`} onClick={(event => {
-                    event.preventDefault()
-                    history.push("/overview")
-                })}>Overzicht
-                </button>
-            </div> : null}
+            {credentials.role && credentials.role !== `ANONYMOUS` ?
+                <div className="container mx-auto d-flex justify-content-end mt-3">
+                    <button className={`btn btn-dark`} onClick={(event => {
+                        event.preventDefault()
+                        history.push("/overview")
+                    })}>Overzicht
+                    </button>
+                </div> : null}
             <ModalServerLoad show={showModal} serverError={serverError} setShow={setShowModal}/>
             {personError ? <ErrorMessage text={`Er moet minstens 1 persoon worden opgegeven`}/> : null}
             <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}
-                           firstName={firstName} lastName={lastName} setFirstName={setFirstName} setLastName={setLastName}
-                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
+                           firstName={firstName} lastName={lastName} setFirstName={setFirstName}
+                           setLastName={setLastName}
+                           nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
             <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
-                      toggleDate={toggleDate}/>
+                      toggleDate={toggleDate} selectedDates={selectedDates}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
             {emailFormatError ? <ErrorMessage text={`De opgegeven email heeft geen geldig formaat`}/> : null}
             <EmailComponent email={email} onChangeEmail={onChangeEmail} confirmation={confirmation}
@@ -169,6 +181,10 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
             </div>
         </>
     )
+}
+
+Reservation.defaultProps = {
+    reservation: {}
 }
 
 export default Reservation;
