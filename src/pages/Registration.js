@@ -1,15 +1,10 @@
 import LoginInput from "../components/login/LoginInput";
 import {useState} from "react";
+import ErrorMessage from "../components/ErrorMessage";
 import {
-    FaAd,
-    FaAt,
-    FaAtlas,
     FaEnvelope, FaEye,
     FaEyeSlash,
-    FaLeaf,
     FaLock,
-    FaMailBulk,
-    FaMailchimp,
     FaUser
 } from "react-icons/all";
 
@@ -20,57 +15,78 @@ const Registration = () => {
     const [password, setPassword] = useState(``);
     const [email, setEmail] = useState(``);
     const [defaultEmail, setDefaultEmail] = useState(false);
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [nameError, setNameError] = useState(false);
 
     const registerUser = (e) => {
         e.preventDefault();
+        if(/\s+/.test(username) || /\W/.test(username)){
+            setNameError(true)
+            return
+        }
+        setNameError(false)
     }
 
 
     return (
-        <form onSubmit={(e) => registerUser(e)} className={`container mx-auto rounded-2 border shadow-sm p-3 mt-3`}>
+        <form onSubmit={(e) => registerUser(e)}
+              className={`container mx-auto rounded-2 border shadow-sm p-3 mt-3 d-flex flex-column align-items-center`}>
             <h1 className="display-6 fs-5 text-center">Registreren:</h1>
-            <div className="row mx-auto container py-3 ">
-                <div className="input-group my-1">
+            <fieldset className="row mx-auto container py-3 ">
+                <legend className={`fw-light`}>Gebruikergegevens:</legend>
+                {nameError ? <ErrorMessage text={`De gebruikersnaam mag geen spaties of vreemde karakters bevatten`} className={`position-relative`} /> : null}
+                <div className="input-group my-1 flex-nowrap">
                 <span className="input-group-text">
                     <FaUser fontSize={16} color={`black`}/>
                 </span>
-                    <div className="col-12 col-md-5">
-                        <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-                               placeholder={`Gebruikersnaam`} className="form-control"/>
+                    <div className="form-floating col-11 col-md-10">
+                        <input type="text" id={`registrationUsername`} value={username}
+                               onChange={e => setUsername(e.target.value)}
+                               placeholder={`Gebruikersnaam`} className="form-control" required={true}/>
+                        <label htmlFor={`registrationUsername`}>Gebruikersnaam</label>
                     </div>
                 </div>
-                <div className="input-group my-1">
+                <div className="input-group my-1 flex-nowrap">
                     <span className="input-group-text">
                         <FaLock fontSize={16}/>
                     </span>
-                    <div className="col-12 col-md-4">
-                        <input type={showPassword ? "text" : "password"} value={password} placeholder={`wachtwoord`}
-                               className={`form-control`} onChange={e => setPassword(e.target.value)}/>
+                    <div className="form-floating col-9">
+                        <input type={showPassword ? "text" : "password"} id={"floatingPassword"} value={password}
+                               placeholder={`Wachtwoord`}
+                               className={`form-control`} onChange={e => setPassword(e.target.value)} required={true}/>
+                        <label htmlFor="floatingPassword" className="form-label">Wachtwoord</label>
                     </div>
-                    <span className="input-group-text col-1 d-flex justify-content-center" onClick={e => setShowPassword(!showPassword)}>
-                        {showPassword ? <FaEyeSlash fontSize={16}/> : <FaEye fontSize={16} /> }
+                    <span className="input-group-text d-flex justify-content-center col-2 col-md-1"
+                          onClick={e => setShowPassword(!showPassword)}>
+                        {showPassword ? <FaEyeSlash fontSize={16}/> : <FaEye fontSize={16}/>}
                     </span>
                 </div>
-            </div>
+            </fieldset>
 
-            <div className="row mx-auto container py-3">
-                <div className="form-check">
-                    <input className="form-check-input keep" type="checkbox" value={defaultEmail} onChange={e => setDefaultEmail(e.currentTarget.checked)} id="flexCheckDefault" />
-                        <label className="form-check-label" htmlFor="flexCheckDefault">
-                            Gebruik dit email om bevestigingsmails te sturen met mijn reservatie
-                        </label>
-                </div>
-                <div className="input-group my-1">
+            <fieldset className="row mx-auto container py-3">
+                <legend className="fw-light">Email adres:</legend>
+                <div className="input-group my-1 flex-nowrap">
                 <span className="input-group-text">
                     <FaEnvelope fontSize={16} color={`black`}/>
                 </span>
-                    <div className="col-12 col-md-5">
-                        <input type="text" value={email} onChange={e => setEmail(e.target.value)}
-                               placeholder={`E-mail`} className="form-control"/>
+                    <div className="form-floating col-11 col-md-10">
+                        <input type="email" value={email} id={"registrationEmail"}
+                               onChange={e => setEmail(e.target.value)} pattern={'\\S+@\\S+.\\S+'}
+                               placeholder={`Email adres`} className="form-control" required={true}/>
+                        <label className={`form-label`} htmlFor={"registrationEmail"}>Email adres</label>
                     </div>
                 </div>
-            </div>
+                <div className="form-text">Dit email adres zal enkel worden gebruikt voor bevestigingsmails</div>
+                <div className="form-check px-5 my-2">
+                    <input className="form-check-input keep" type="checkbox" value={defaultEmail}
+                           onChange={e => setDefaultEmail(e.currentTarget.checked)} id="flexCheckDefault"/>
+                    <label className="form-check-label" htmlFor="flexCheckDefault">
+                        Gebruik dit email om bevestigingsmails te sturen met mijn reservatie
+                    </label>
+                </div>
+            </fieldset>
+
+            <input type="submit" value="registreren" className={`btn btn-dark my-3`}/>
         </form>
     )
 
