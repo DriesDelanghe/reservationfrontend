@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
-
+import ReservationDateField from "../../components/admin/reservationpage/ReservationDateField";
 
 const ReservationPage = ({fetchWithCsrf}) => {
 
-    const [reservationDates, setReservationDates] = useState([])
+    const [reservationDates, setReservationDates] = useState([{}])
+    const [activeDate, setActiveDate] = useState({})
 
     useEffect(() => {
         const fetchReservationDates = async () => {
@@ -11,16 +12,17 @@ const ReservationPage = ({fetchWithCsrf}) => {
                 method: "GET"
             }
             const res = await fetchWithCsrf("/data/openingdates", fetchOptions)
-            const data = await res.json();
-            console.log(`fetched reservation dates `, data)
-            setReservationDates(data)
+            return await res.json();
         }
-        fetchReservationDates();
-    } , [])
+        fetchReservationDates().then(data => setReservationDates(data));
+    }, []);
 
     return (
-        <div className="container-fluid mt-3">
-            <h1 className="display-6">Reservaties</h1>
+        <div className="container-fluid mx-auto mt-3">
+            <h1 className="display-6 text-center">Reservaties</h1>
+            <div className="row gap-3 justify-content-center">
+                {reservationDates.map((reservationDate, index) => <ReservationDateField key={index} openingDate={reservationDate} setActiveDate={setActiveDate} /> )}
+            </div>
         </div>
     )
 
