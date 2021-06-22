@@ -5,6 +5,7 @@ import EmailComponent from "../../components/user/EmailComponent";
 import ErrorMessage from "../../components/user/ErrorMessage";
 import ModalServerLoad from "../../components/user/ModalServerLoad";
 import {useHistory} from "react-router-dom";
+import {array} from "prop-types";
 
 const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials, reservation}) => {
 
@@ -16,7 +17,10 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     const [period, setPeriod] = useState([[]])
     const [selectedDates, setSelectedDates] = useState(reservation.openingDateList || [])
     const [people, setPeople] = useState(reservation.personList || [])
-    const [email, setEmail] = useState(reservation.email || credentials.useEmail ? credentials.email : {id: null, email: ''})
+    const [email, setEmail] = useState(reservation.email || credentials.useEmail ? credentials.email : {
+        id: null,
+        email: ''
+    })
     const [confirmation, setConfirmation] = useState(reservation.confirmation || credentials.useEmail || false);
     const [personError, setPersonError] = useState(false);
     const [emailError, setEmailError] = useState(false);
@@ -77,7 +81,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
 
     const removePerson = (id) => {
         setPeople(people.filter((person) => {
-            if (person.id != null){
+            if (person.id != null) {
                 return person.id !== id;
             }
             return person.localid !== id
@@ -87,11 +91,19 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     const toggleDate = (id) => {
         if (!selectedDates.find(object => object.id === id)) {
             const newDate = reservationDates.find(object => object.id === id)
-            setSelectedDates([...selectedDates, newDate])
             setSelectedDatesError(false);
+            const sorted = [...selectedDates, newDate]
+            sorted.sort(compareSelectedDates)
+            setSelectedDates([...sorted])
             return;
         }
         setSelectedDates(selectedDates.filter(object => object.id !== id));
+    }
+
+    const compareSelectedDates = (objectA, objectB) => {
+        if (objectA.id > objectB.id) return 1
+        if (objectA.id < objectB.id) return -1
+        return 0
     }
 
     const onChangeEmail = (e) => {
@@ -153,14 +165,21 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
 
     return (
         <>
-            {credentials.role && credentials.role !== `ANONYMOUS` ?
+            {credentials.role && credentials.role === `USER` ?
                 <div className="container mx-auto d-flex justify-content-end mt-3">
                     <button className={`btn btn-dark`} onClick={(event => {
                         event.preventDefault()
                         history.push("/overview")
                     })}>Overzicht
                     </button>
-                </div> : null}
+                </div> : credentials.role && credentials.role === `ADMIN` ?
+                    <div className="container mx-auto d-flex justify-content-end mt-3">
+                        <button className={`btn btn-dark`} onClick={(event => {
+                            event.preventDefault()
+                            history.push("/admin")
+                        })}>Admin panel
+                        </button>
+                    </div> : null}
             <ModalServerLoad show={showModal} serverError={serverError} setShow={setShowModal}/>
             {personError ? <ErrorMessage text={`Er moet minstens 1 persoon worden opgegeven`}/> : null}
             <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}
@@ -169,7 +188,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
             <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
-                      toggleDate={toggleDate} selectedDates={selectedDates}/>
+                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
             {emailFormatError ? <ErrorMessage text={`De opgegeven email heeft geen geldig formaat`}/> : null}
             <EmailComponent email={email} onChangeEmail={onChangeEmail} confirmation={confirmation}
@@ -183,8 +202,9 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     )
 }
 
-Reservation.defaultProps = {
-    reservation: {}
-}
+Reservation.defaultProps =
+    {
+        reservation: {}
+    }
 
 export default Reservation;

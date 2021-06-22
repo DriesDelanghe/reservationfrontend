@@ -18,6 +18,9 @@ const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
                     if (data.role === "USER") {
                         history.push("/overview")
                     }
+                if (data.role === "ADMIN"){
+                    history.push("/admin")
+                }
                 return
                 }
                 setLoginError(true)
@@ -57,13 +60,19 @@ const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
         )
     }
     return (
-        <div className="container border mx-auto shadow-sm mt-5 p-3">
+        <>
+            {credentials.role === "ADMIN" ?
+            <div className="container d-flex justify-content-end mt-3">
+             <Link to={"/admin"} className={`btn btn-dark`}>Naar adminpage</Link>
+            </div>
+                : null}
+        <div className="container border mx-auto shadow-sm mt-3 p-3">
             <h2 className="display-5 text-center">Ingelogd!</h2>
             <div className="container d-flex justify-content-start">
                 <button className={'btn btn-secondary'} onClick={() => performLogout()}>Uitloggen</button>
             </div>
         </div>
+        </>
     )
 }
-
 export default LoginForm;

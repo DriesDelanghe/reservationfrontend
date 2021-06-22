@@ -19,7 +19,7 @@ const Overview = ({fetchWithCsrf, credentials, setReservation}) => {
             console.log(`res: ${res}`)
             const data = await res.json();
             if (data) {
-                setBackendReservation([...data] || [data])
+                setBackendReservation([...data] || data)
             }
         }
         if (credentials.role !== `ANONYMOUS`) {

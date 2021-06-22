@@ -11,6 +11,7 @@ import {useEffect, useState} from "react";
 import './bootstrapSettings.scss'
 import LoggedOut from "./pages/user/LoggedOut";
 import Registration from "./pages/user/Registration";
+import AdminHomepage from "./pages/admin/adminHomepage";
 
 function App() {
 
@@ -180,6 +181,9 @@ function App() {
             </Route>
             <Route exact path={"/confirmation"}>
                 <Confirmation />
+            </Route>
+            <Route path ="/admin/">
+                <AdminHomepage credentials={credentials} fetchWithCsrf={fetchWithCsrf} />
             </Route>
         </Switch>
         {credentials.role === `ANONYMOUS` ? <OffCanvasBottom/> : null}

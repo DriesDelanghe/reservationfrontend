@@ -16,7 +16,7 @@ const LoggedOut = ({credentials}) => {
                     </Link>
                 </div>
                 </> :
-            <h1 className={`display-6 fs-5 text-danger`}>Er is iets fout gelopen met de logout, probeer opnieuw</h1> }
+            <h1 className={`display-6 fs-5 text-muted`}>U wordt uitgelogd, als dit te lang duurt probeer dan opnieuw</h1> }
         </div>
     )
 }
