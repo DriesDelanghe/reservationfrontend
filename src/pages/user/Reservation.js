@@ -1,9 +1,9 @@
 import {useState, useEffect} from 'react'
-import NameComponent from '../components/NameComponent.js'
-import Calendar from '../components/calendar/Calendar'
-import EmailComponent from "../components/EmailComponent";
-import ErrorMessage from "../components/ErrorMessage";
-import ModalServerLoad from "../components/ModalServerLoad";
+import NameComponent from '../../components/user/NameComponent.js'
+import Calendar from '../../components/user/calendar/Calendar'
+import EmailComponent from "../../components/user/EmailComponent";
+import ErrorMessage from "../../components/user/ErrorMessage";
+import ModalServerLoad from "../../components/user/ModalServerLoad";
 import {useHistory} from "react-router-dom";
 
 const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials, reservation}) => {
@@ -16,8 +16,8 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
     const [period, setPeriod] = useState([[]])
     const [selectedDates, setSelectedDates] = useState(reservation.openingDateList || [])
     const [people, setPeople] = useState(reservation.personList || [])
-    const [email, setEmail] = useState(reservation.email || {id: null, email: ''})
-    const [confirmation, setConfirmation] = useState(reservation.confirmation || false);
+    const [email, setEmail] = useState(reservation.email || credentials.useEmail ? credentials.email : {id: null, email: ''})
+    const [confirmation, setConfirmation] = useState(reservation.confirmation || credentials.useEmail || false);
     const [personError, setPersonError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [selectedDatesError, setSelectedDatesError] = useState(false);

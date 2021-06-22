@@ -1,16 +1,16 @@
 import {BrowserRouter as Router, Switch, Route, useHistory} from "react-router-dom";
-import Header from './components/header'
-import Reservation from "./pages/Reservation";
-import Overview from "./pages/Overview";
-import OffCanvasBottom from "./components/OffCanvasBottom";
-import LoginForm from "./components/login/LoginForm";
-import Confirmation from "./pages/Confirmation";
-import LoginBanner from "./components/LoginBanner";
+import Header from './components/user/header'
+import Reservation from "./pages/user/Reservation";
+import Overview from "./pages/user/Overview";
+import OffCanvasBottom from "./components/user/OffCanvasBottom";
+import LoginForm from "./components/user/login/LoginForm";
+import Confirmation from "./pages/user/Confirmation";
+import LoginBanner from "./components/user/LoginBanner";
 import './App.css'
 import {useEffect, useState} from "react";
 import './bootstrapSettings.scss'
-import LoggedOut from "./pages/LoggedOut";
-import Registration from "./pages/Registration";
+import LoggedOut from "./pages/user/LoggedOut";
+import Registration from "./pages/user/Registration";
 
 function App() {
 
@@ -68,7 +68,7 @@ function App() {
             const body = await response.json();
             console.log(`   async authenticate: received response ${JSON.stringify(body)}`);
             console.log("   async authenticate: done");
-            setCredentials({username: body.username, role: body.role});
+            setCredentials({username: body.username, role: body.role, useEmail: body.useEmail, email: body.email});
             return {username: body.username, role: body.role};
         } catch (e) {
             console.log(`   async authenticate: ERROR ${JSON.stringify(e)}`);
@@ -145,7 +145,7 @@ function App() {
             const response = await fetch(`/authenticate`, fetchOptions);
             const body = await response.json();
             console.log(`   async refreshAuthentication: received response ${JSON.stringify(body)}`);
-            setCredentials({username: body.username, role: body.role});
+            setCredentials({username: body.username, role: body.role, useEmail: body.useEmail, email: body.email});
             console.log("   async refreshAuthentication: done");
         } catch (e) {
             console.log(`   async refreshAuthentication: ERROR ${e}`);
@@ -163,7 +163,7 @@ function App() {
                            performLogin={performLogin} doLogout={signout} />
             </Route>
             <Route exact path={'/registration'} >
-                <Registration />
+                <Registration fetchWithCsrf={fetchWithCsrf} authenticate={authenticate}/>
             </Route>
             <Route exact path={'/logout'}>
                 <LoggedOut credentials={credentials}/>

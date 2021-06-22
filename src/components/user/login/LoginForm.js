@@ -1,6 +1,7 @@
 import LoginInput from "./LoginInput";
 import {useHistory} from "react-router-dom";
 import {useState} from "react";
+import {Link} from 'react-router-dom'
 
 const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
 
@@ -48,7 +49,9 @@ const LoginForm = ({ credentials, setCredentials, performLogin, doLogout }) => {
                 </label>
                 <div className="container">
                     <input type={`submit`} value={'Inloggen'} className={`btn btn-dark mt-3 ms-2`}/>
-
+                </div>
+                <div className="container mt-4">
+                    <p>nog geen account? <Link to={"/registration"} className={`btn-link`}>Registreren</Link></p>
                 </div>
             </form>
         )
