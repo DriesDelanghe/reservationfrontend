@@ -21,12 +21,13 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         id: null,
         email: ''
     })
+    const [dateFull, setDateFull] = useState(false);
     const [confirmation, setConfirmation] = useState(reservation.confirmation || credentials.useEmail || false);
     const [personError, setPersonError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [selectedDatesError, setSelectedDatesError] = useState(false);
     const [emailFormatError, setEmailFormatError] = useState(false);
-
+    const [dateFullError, setDateFullError] = useState(false);
     const [nameNotEmpty, setNameNotEmpty] = useState(false)
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -113,17 +114,31 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         setEmailFormatError(false);
     }
 
+    const checkDatesFull = () => {
+        let amountExceeded = false;
+        selectedDates.forEach(dateObject => {
+            const amountAllowed = dateObject.reservationLimit - dateObject.reservationAmount;
+            if(amountAllowed < people.length){
+                console.log(`${amountAllowed} is smaller than ${people.length}`)
+                amountExceeded = true;
+            }
+        })
+        setDateFull(amountExceeded)
+    }
+
     const checkSubmit = async (e) => {
         e.preventDefault();
         setShowModal(true)
+        checkDatesFull()
         const regex = /\S+@\S+\.\S+/;
-        if (!people[0] || (!email.email && confirmation) || !selectedDates[0] || (!selectedDatesError && email.email && !regex.test(email.email))
+        if (!people[0] || (!email.email && confirmation) || !selectedDates[0] || (!selectedDatesError && email.email && !regex.test(email.email)) || dateFull
             || lastName || firstName) {
             !people[0] ? setPersonError(true) : setPersonError(false);
             !email.email && confirmation ? setEmailError(true) : setEmailError(false);
             !selectedDates[0] ? setSelectedDatesError(true) : setSelectedDatesError(false);
             !emailError && !regex.test(email.email) && email.email ? setEmailFormatError(true) : setEmailFormatError(false);
             lastName || firstName ? setNameNotEmpty(true) : setNameNotEmpty(false);
+            dateFull ? setDateFullError(true) : setDateFull(false);
             window.scrollTo(0, 0)
             setShowModal(false)
             return
@@ -131,7 +146,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         console.log(`All data seems right to me!`)
         const reservation = constructReservationObject();
         const res = await addReservation(reservation);
-        console.log(res)
+        console.log(res, "server response")
         if (res && res.ok) {
             history.push("/confirmation")
         }
@@ -180,6 +195,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
                         })}>Admin panel
                         </button>
                     </div> : null}
+            {dateFullError ? <ErrorMessage text={`Gelieve geen volzette dagen te selecteren`}/> : null}
             <ModalServerLoad show={showModal} serverError={serverError} setShow={setShowModal}/>
             {personError ? <ErrorMessage text={`Er moet minstens 1 persoon worden opgegeven`}/> : null}
             <NameComponent onAdd={addPerson} people={people} onRemove={removePerson}
@@ -188,7 +204,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
             <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
-                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people}/>
+                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people} setDateFull={setDateFull}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
             {emailFormatError ? <ErrorMessage text={`De opgegeven email heeft geen geldig formaat`}/> : null}
             <EmailComponent email={email} onChangeEmail={onChangeEmail} confirmation={confirmation}

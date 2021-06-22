@@ -1,9 +1,11 @@
+import {useEffect} from "react";
 
 
 const SelectedDateField = ({selectedDate, personList, toggleDate }) => {
 
     const reservationsLeft = selectedDate.reservationLimit - selectedDate.reservationAmount;
     const reservationAmount = personList.length;
+
 
     return(
         <div className="container d-flex justify-content-between border bg-light my-2 p-2">

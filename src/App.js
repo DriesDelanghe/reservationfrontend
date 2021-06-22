@@ -26,7 +26,8 @@ function App() {
             console.log(object)
             console.log(object.id, `id reservation`)
             const res = await submitData(object, `/data/reservation/${object.id ? object.id : ''}`);
-            if (res) {
+            console.log("server response: ", res)
+            if (res && res.ok) {
                 const reservation = await res.json();
                 setReservations([...reservations, reservation]);
                 console.log(reservation, reservations)
@@ -114,6 +115,12 @@ function App() {
         }
 
         const res = await fetchWithCsrf(url, fetchOptions);
+        console.log("server responded with ", res.status)
+        if (res.status == 409){
+            setServerError(`Een van de geselecteerde reservaties overschreid de reservatie limiet, als dit niet getoond wordt gelieve de pagina dan te herladen`)
+            return null;
+        }
+
         if (res.status !== 200) {
             console.log(res.status)
             setServerError(`unable to connect to server`)
