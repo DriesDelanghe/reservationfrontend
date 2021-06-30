@@ -12,7 +12,7 @@ const AdminHomepage = ({credentials, fetchWithCsrf }) => {
     const [activeDate, setActiveDate] = useState({})
     const [showLoadModal, setShowLoadModal] = useState(false)
     const [serverError, setServerError] = useState('')
-    const [nameAndLink, setNameAndLink] = useState([{}])
+    const [nameAndLink, setNameAndLink] = useState([{name: 'Homepage', link: '/admin'}])
 
 
     useEffect(() => {
