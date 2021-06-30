@@ -16,7 +16,7 @@ const CalendarField = ({ dateString, isClickable, monthList, reservationDate, to
             return
         }
         setSelected(false)
-    }, [selectedDates])
+    }, [selectedDates, dateString])
 
     if (isClickable){
 

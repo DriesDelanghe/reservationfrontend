@@ -1,12 +1,8 @@
 import {useEffect, useState} from "react";
 import ReservationDateField from "../../components/admin/reservationpage/ReservationDateField";
-import {Button} from "react-bootstrap";
-import {FaArrowLeft} from "react-icons/all";
-import {useHistory} from "react-router-dom";
 
 const ReservationPage = ({fetchWithCsrf, setActiveDate, setShowModal, setServerError, setNameAndLink }) => {
 
-    const history = useHistory()
     const [reservationDates, setReservationDates] = useState([{}])
 
     useEffect(() => {

@@ -9,7 +9,6 @@ import OpeningDatePage from "./OpeningDatePage";
 
 const AdminHomepage = ({credentials, fetchWithCsrf }) => {
 
-    const history = useHistory();
     const [activeDate, setActiveDate] = useState({})
     const [showLoadModal, setShowLoadModal] = useState(false)
     const [serverError, setServerError] = useState('')
@@ -17,10 +16,6 @@ const AdminHomepage = ({credentials, fetchWithCsrf }) => {
 
 
     useEffect(() => {
-        console.log(credentials.role, "user role should be admin")
-        if (credentials.role !== "ADMIN") {
-            history.push("/login")
-        }
         setNameAndLink([{name: 'Homepage', link: '/admin'}])
     }, [])
 

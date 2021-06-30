@@ -5,7 +5,6 @@ import EmailComponent from "../../components/user/EmailComponent";
 import ErrorMessage from "../../components/user/ErrorMessage";
 import ModalServerLoad from "../../components/user/ModalServerLoad";
 import {useHistory} from "react-router-dom";
-import {array} from "prop-types";
 
 const Reservation = ({
                          addReservation,

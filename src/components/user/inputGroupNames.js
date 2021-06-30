@@ -1,6 +1,6 @@
 import InputField from "./InputField";
 import PropTypes from 'prop-types'
-import {useState} from 'react'
+
 
 
 const InputGroupNames = ({name1, name2, placeholder1, placeholder2, type, onAdd, firstName, setFirstName, lastName, setLastName , nameNotEmpty, setNameNotEmpty }) => {

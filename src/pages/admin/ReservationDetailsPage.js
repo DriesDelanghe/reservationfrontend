@@ -1,12 +1,10 @@
 import {useEffect, useState} from "react";
 import ReservationDetailField from "../../components/admin/reservationpage/ReservationDetailField";
 import {Accordion, Card, Button, ListGroup} from "react-bootstrap";
-import {FaArrowLeft, FaChevronDown, FaChevronUp} from "react-icons/all";
-import {Link, useHistory} from "react-router-dom";
+import { FaChevronDown, FaChevronUp} from "react-icons/all";
 
 const ReservationDetailsPage = ({activeDate, fetchWithCsrf, setShowModal, setServerError, setNameAndLink}) => {
 
-    const history = useHistory()
 
     const [reservations, setReservations] = useState([{}])
     const [accordionExpanded, setAccordionExpanded] = useState(false)

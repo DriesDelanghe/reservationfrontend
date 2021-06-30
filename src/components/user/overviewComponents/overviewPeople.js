@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+
 import OverviewPerson from "./OverviewPerson";
 
 const OverviewPeople = ({people}) => {

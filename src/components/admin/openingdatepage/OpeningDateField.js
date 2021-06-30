@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
 import {Card, Button} from "react-bootstrap";
-import {FaArchive, FaBox, FaBoxOpen, FaCalendar, FaClock} from "react-icons/all";
+import { FaBox, FaBoxOpen, FaCalendar, FaClock} from "react-icons/all";
 import ReservationInput from "./reservationInput";
 
-const OpeningDateField = ({dateObject, removeDate, updateDate}) => {
+const OpeningDateField = ({dateObject, updateDate}) => {
 
+    const [referenceObject, setReferenceObject] = useState()
     const [openHour, setOpenHour] = useState()
     const [closeHour, setCloseHour] = useState()
     const [openingDate, setOpeningDate] = useState()
@@ -15,7 +16,6 @@ const OpeningDateField = ({dateObject, removeDate, updateDate}) => {
 
     useEffect(() => {
         if (dateObject.openingHour) {
-            console.log(dateObject)
             const timeList = dateObject.openingHour.split(":");
             let hour;
             Number(timeList[0]) < 10 ? hour = "0" + timeList[0].replace("0", "") : hour = timeList[0]
@@ -24,6 +24,7 @@ const OpeningDateField = ({dateObject, removeDate, updateDate}) => {
             setOpeningDate(dateObject.openingDate)
             setActiveDate(dateObject.activeDate)
             setCapacity(dateObject.reservationLimit)
+            setReferenceObject(dateObject)
         }
     }, [])
 

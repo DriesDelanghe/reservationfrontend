@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Switch, Route, useHistory} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import Header from './components/user/header'
 import Reservation from "./pages/user/Reservation";
 import Overview from "./pages/user/Overview";
@@ -37,14 +37,18 @@ function App() {
         return null;
     }
 
-    useEffect(async () => {
-        console.log("useEffect: start");
-        if (!document.cookie.match(new RegExp('XSRF-TOKEN=([^;]+)'))) {
-            await authenticate("anonymous", "Pr0t3ct3d_")
-            return
+    useEffect( () => {
+        const doAuthenticate = async() => {
+            console.log("useEffect: start");
+            if (!document.cookie.match(new RegExp('XSRF-TOKEN=([^;]+)'))) {
+                await authenticate("anonymous", "Pr0t3ct3d_")
+                return
+            }
+            refreshAuthentication();
         }
-        refreshAuthentication();
+        doAuthenticate();
     }, [])
+
 
     const removeReservations = () => {
         setReservations([]);
@@ -116,7 +120,7 @@ function App() {
 
         const res = await fetchWithCsrf(url, fetchOptions);
         console.log("server responded with ", res.status)
-        if (res.status == 409){
+        if (res.status === 409){
             setServerError(`Een van de geselecteerde reservaties overschreid de reservatie limiet, als dit niet getoond wordt gelieve de pagina dan te herladen`)
             return null;
         }
@@ -134,7 +138,7 @@ function App() {
         const fetchOptions = {
             method: 'POST'
         }
-        const res = await fetchWithCsrf('/logout', fetchOptions)
+        await fetchWithCsrf('/logout', fetchOptions)
         await authenticate("anonymous", "Pr0t3ct3d_")
         removeReservations();
     }
@@ -190,7 +194,7 @@ function App() {
                 <Confirmation />
             </Route>
             <Route path ="/admin/">
-                <AdminHomepage credentials={credentials} fetchWithCsrf={fetchWithCsrf} />
+                {credentials.role !== "ADMIN" ? <Redirect to={'/login'}/> : <AdminHomepage credentials={credentials} fetchWithCsrf={fetchWithCsrf} />}
             </Route>
         </Switch>
         {credentials.role === `ANONYMOUS` ? <OffCanvasBottom/> : null}

@@ -30,8 +30,7 @@ ReservationInput.propTypes = {
     FaSymbol: PropTypes.element,
     type: PropTypes.string,
     setter: PropTypes.func,
-    value: PropTypes.string,
-    className: ''
+    value: PropTypes.string
 }
 
 export default ReservationInput
