@@ -32,7 +32,7 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
         setShowModal(true)
         try {
             fetchActiveDates().then(data => {
-                setActiveDates(data)
+                setActiveDates([...data])
                 console.log("setting active dates to: ", data)
             }).then( () =>
             console.log("active dates after setting: ", activeDates)
@@ -53,6 +53,8 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
         console.log('inactive dates: ', inactiveDates)
 
     }, [])
+
+    useEffect(() => {console.log('When do you change from 24 to 23? ', activeDates)}, [activeDates])
 
 
     const updateDate = (dateObject) => {
