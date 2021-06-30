@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import OpeningDateField from "../../components/admin/openingdatepage/OpeningDateField";
-import { Prompt } from 'react-router-dom'
+import {Prompt} from 'react-router-dom'
 
 const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWithCsrf}) => {
 
@@ -16,42 +16,44 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
     }, [])
 
     useEffect(() => {
-        const fetchData = async () => {
-            setShowModal(true)
-            try{
-            await fetchActiveDates()
-            await fetchInactiveDates()
-            }catch (e) {
-                console.log("an error occurred, ", e)
-                setServerError('An error occured while fetching openingdates from the server')
-                return
-            }
-            setShowModal(false)
-            console.log('active dates: ', activeDates)
-            console.log('inactive dates: ', inactiveDates)
+
+        const fetchActiveDates = async () => {
+            const fetchOptions = {method: "GET"}
+            const res = await fetchWithCsrf("/data/openingdates", fetchOptions)
+            return await res.json()
         }
 
-        fetchData()
+        const fetchInactiveDates = async () => {
+            const fetchOptions = {method: "GET"}
+            const res = await fetchWithCsrf("/restricted/openingdates/inactive", fetchOptions)
+            return await res.json()
+        }
+
+        setShowModal(true)
+        try {
+            fetchActiveDates().then(data => {
+                setActiveDates(data)
+                console.log("setting active dates to: ", data)
+            }).then( () =>
+            console.log("active dates after setting: ", activeDates)
+            )
+            fetchInactiveDates().then(data => {
+                setInactiveDates(data)
+                console.log("setting inactive dates to: ", data)
+            }).then( () =>
+            console.log("inactive dates after setting: ", inactiveDates)
+            )
+        } catch (e) {
+            console.log("an error occurred, ", e)
+            setServerError('An error occured while fetching openingdates from the server')
+            return
+        }
+        setShowModal(false)
+        console.log('active dates: ', activeDates)
+        console.log('inactive dates: ', inactiveDates)
+
     }, [])
 
-    const fetchActiveDates = async () => {
-        const fetchOptions = {method: "GET"}
-        const res = await fetchWithCsrf("/data/openingdates", fetchOptions)
-        const data = await res.json();
-        console.log("actve dates from server: ", data)
-        setActiveDates([...data])
-        console.log("active dates in fetch function", activeDates)
-    }
-
-    const fetchInactiveDates = async () => {
-        const fetchOptions = {method: "GET"}
-        const res = await fetchWithCsrf("/restricted/openingdates/inactive", fetchOptions)
-        const data = await res.json()
-        const array = [...data]
-        console.log("inactive dates server: ", array)
-        setInactiveDates([...array])
-        console.log("inactive dates in fetch function", inactiveDates)
-    }
 
     const updateDate = (dateObject) => {
         dateObject.activeDate ? addToArray(dateObject, setActiveDates, activeDates) : addToArray(dateObject, setInactiveDates, inactiveDates)
@@ -61,7 +63,6 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
         let referenceArray = [...stateArray]
         setActiveDates(activeDates.filter(date => date.id !== dateObject.id))
         setInactiveDates(inactiveDates.filter(date => date.id !== dateObject.id))
-
 
         referenceArray = [...referenceArray.filter(date => date.id !== dateObject.id)]
         referenceArray.push(dateObject)
@@ -94,7 +95,8 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                 </div>
                 <div className="accordion-item">
                     <h2 className="accordion-header" id="panelsStayOpen-headingTwo">
-                        <button className="accordion-button collapsed display-6 fw-normal fs-5" data-bs-toggle="collapse"
+                        <button className="accordion-button collapsed display-6 fw-normal fs-5"
+                                data-bs-toggle="collapse"
                                 data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
                                 aria-controls="panelsStayOpen-collapseTwo">
                             Inactieve reservaties
@@ -104,15 +106,16 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                     <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse"
                          aria-labelledby="panelsStayOpen-headingTwo">
                         <div className="accordion-body container-fluid row">
-                            {inactiveDates && inactiveDates[0] ? inactiveDates.map((activeDate, index) => <OpeningDateField
-                                    key={activeDate.id} updateDate={updateDate}
-                                    dateObject={activeDate}/>) :
+                            {inactiveDates && inactiveDates[0] ? inactiveDates.map((activeDate, index) =>
+                                    <OpeningDateField
+                                        key={activeDate.id} updateDate={updateDate}
+                                        dateObject={activeDate}/>) :
                                 <p className="lead mt-3">Geen data gevonden</p>}
                         </div>
                     </div>
                 </div>
             </div>
-            <Prompt message={"Am I doing this right?"} />
+            <Prompt message={"Am I doing this right?"}/>
         </>
 
     )
