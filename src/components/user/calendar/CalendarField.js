@@ -11,7 +11,6 @@ const CalendarField = ({ dateString, isClickable, monthList, reservationDate, to
     const [selected, setSelected] = useState();
 
     useEffect(() => {
-        console.log(`checking for selected`)
         if (!!selectedDates.find(selected => new Date(selected.openingDate).getTime() === new Date(dateString).getTime())){
             setSelected(true)
             return
@@ -28,8 +27,9 @@ const CalendarField = ({ dateString, isClickable, monthList, reservationDate, to
             <td className={'border p-0'} onChange={() => toggleDate(reservationDate.id)}>
                 <label htmlFor={id} className={'w-100 h-100 p-0'}>
                     <input type="checkbox" id={id} checked={selected}/>
-                    <div className={reservationsLeft < reservationAmount ? `p-2 date-full` : `p-2 date`}>
-                        <span>{day} <br/> {month}</span>
+                    <div className={reservationsLeft < reservationAmount ? `p-2 date-full w-100` : `p-2 date w-100`}>
+                        <p className={'text-end m-0 fs-6'}>{day} <br/> {month}</p> <br/>
+                        <p className={'text-start m-0 lead fs-6 text-muted'}>{reservationDate.reservationAmount} / {reservationDate.reservationLimit}</p>
                     </div>
                 </label>
             </td>
@@ -38,7 +38,7 @@ const CalendarField = ({ dateString, isClickable, monthList, reservationDate, to
     return (
         <td className={`p-0 border text-muted bg-light`}>
             <div className={`p-2 date`}>
-                <span>{day} <br/> {month}</span>
+                <p className={'text-end m-0 lead fs-6'}>{day} <br/> {month}</p>
             </div>
         </td>
     )

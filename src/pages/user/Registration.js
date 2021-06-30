@@ -17,7 +17,6 @@ const Registration = ({fetchWithCsrf, authenticate}) => {
     const [showPassword, setShowPassword] = useState(false);
     const [nameError, setNameError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [userNameExists, setUserNameExists] = useState(false);
     const history = useHistory();
 
 
@@ -61,8 +60,7 @@ const Registration = ({fetchWithCsrf, authenticate}) => {
             return
         }
         setErrorMessage("")
-        setUserNameExists(false)
-        const account = await authenticate(username, password)
+        await authenticate(username, password)
         history.push("/overview")
     }
 

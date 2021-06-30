@@ -1,7 +1,14 @@
 import {Card} from "react-bootstrap";
+import {useHistory} from "react-router-dom";
 
 const ReservationDateField = ({openingDate, setActiveDate }) => {
 
+    const history = useHistory()
+
+    const onClickDateField = () => {
+        setActiveDate(openingDate)
+        history.push("/admin/reservations/details")
+    }
 
     return(
         <div className="col-10 col-md-5">
@@ -15,7 +22,8 @@ const ReservationDateField = ({openingDate, setActiveDate }) => {
                 </Card.Header>
                 <Card.Body>
                     <div className="d-flex justify-content-end">
-                        <button className="btn btn-dark">Bekijk reservaties</button>
+                        {openingDate.reservationAmount > 0 ? <button className="btn btn-dark" onClick={() => onClickDateField()}>Bekijk
+                            reservaties</button> : <p className="lead text-center">Er zijn nog geen reservaties geplaatst voor deze dag</p>}
                     </div>
                 </Card.Body>
             </Card>

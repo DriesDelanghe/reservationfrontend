@@ -4,7 +4,7 @@ import CalendarField from "./CalendarField";
 const CalendarRow = ({dates, referenceList, monthList, toggleDate, selectedDates, personList }) => {
 
     return (
-        <tr className={'text-end'}>
+        <tr>
             {dates.map((date, index) => <CalendarField key={index} monthList={monthList} dateString={date}
                 isClickable={!!referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
                 reservationDate={referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}

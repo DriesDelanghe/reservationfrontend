@@ -39,7 +39,7 @@ function App() {
 
     useEffect(async () => {
         console.log("useEffect: start");
-        if (!document.cookie) {
+        if (!document.cookie.match(new RegExp('XSRF-TOKEN=([^;]+)'))) {
             await authenticate("anonymous", "Pr0t3ct3d_")
             return
         }
@@ -180,7 +180,7 @@ function App() {
                 <Reservation addReservation={addReservation} setShowModal={setShowModal}
                              serverError={serverError} showModal={showModal}
                              credentials={credentials}
-                             reservation={reservationObject}/>
+                             reservation={reservationObject} setServerError={setServerError}/>
             </Route>
             <Route exact path="/overview">
                 <Overview fetchWithCsrf={fetchWithCsrf} credentials={credentials}

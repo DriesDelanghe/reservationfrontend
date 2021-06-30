@@ -7,7 +7,15 @@ import ModalServerLoad from "../../components/user/ModalServerLoad";
 import {useHistory} from "react-router-dom";
 import {array} from "prop-types";
 
-const Reservation = ({addReservation, serverError, showModal, setShowModal, credentials, reservation}) => {
+const Reservation = ({
+                         addReservation,
+                         serverError,
+                         setServerError,
+                         showModal,
+                         setShowModal,
+                         credentials,
+                         reservation
+                     }) => {
 
     const history = useHistory()
 
@@ -40,37 +48,40 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         return data;
     }
 
-    //set monthNames to data received from server, only called on load
     useEffect(() => {
-        const getMonthName = async () => {
-            const monthNamesServer = await fetchServerData(`/data/month`);
-            setMonthNames([...monthNamesServer]);
+        const fetchData = async () => {
+            setShowModal(true)
+            await Promise.all([getPeriod(), getReservationDates(), getMonthName()]).then(() =>
+                setShowModal(false)
+            )
+                .catch(e =>
+                    setServerError("An error occured fetching data from the server, please try again later"))
         }
-        getMonthName();
-    }, []);
+        fetchData()
+    }, [])
+
+    //set monthNames to data received from server, only called on load
+    const getMonthName = async () => {
+        const monthNamesServer = await fetchServerData(`/data/month`);
+        setMonthNames([...monthNamesServer]);
+    }
 
     //set openingDates to data received from server, only called on load
-    useEffect(() => {
-        const getReservationDates = async () => {
-            const reservationDatesServer = await fetchServerData(`/data/openingdates`);
-            setReservationDates(reservationDatesServer.filter(object => {
-                const openingsDate = new Date(object.openingDate)
-                const date = new Date()
-                date.setHours(2, 0, 0, 0)
-                return openingsDate.getTime() >= date.getTime();
-            }));
-        }
-        getReservationDates().then(r => setShowModal(false));
-    }, []);
+    const getReservationDates = async () => {
+        const reservationDatesServer = await fetchServerData(`/data/openingdates`);
+        setReservationDates(reservationDatesServer.filter(object => {
+            const openingsDate = new Date(object.openingDate)
+            const date = new Date()
+            date.setHours(2, 0, 0, 0)
+            return openingsDate.getTime() >= date.getTime();
+        }));
+    }
 
     //set  period to data reveived from server, only called on load
-    useEffect(() => {
-        const getPeriod = async () => {
-            const periodServer = await fetchServerData(`/data/period`);
-            setPeriod([...periodServer]);
-        }
-        getPeriod();
-    }, []);
+    const getPeriod = async () => {
+        const periodServer = await fetchServerData(`/data/period`);
+        setPeriod([...periodServer]);
+    }
 
 
     const addPerson = (person) => {
@@ -118,7 +129,7 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
         let amountExceeded = false;
         selectedDates.forEach(dateObject => {
             const amountAllowed = dateObject.reservationLimit - dateObject.reservationAmount;
-            if(amountAllowed < people.length){
+            if (amountAllowed < people.length) {
                 console.log(`${amountAllowed} is smaller than ${people.length}`)
                 amountExceeded = true;
             }
@@ -204,7 +215,8 @@ const Reservation = ({addReservation, serverError, showModal, setShowModal, cred
                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
             <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
-                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people} setDateFull={setDateFull}/>
+                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people}
+                      setDateFull={setDateFull}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
             {emailFormatError ? <ErrorMessage text={`De opgegeven email heeft geen geldig formaat`}/> : null}
             <EmailComponent email={email} onChangeEmail={onChangeEmail} confirmation={confirmation}
