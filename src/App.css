@@ -65,3 +65,7 @@ td{
   background-color: var(--bs-dark) !important;
   color: var(--bs-danger)!important;
 }
+
+.calendar-even-width{
+  width: calc(100%/7);
+}

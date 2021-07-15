@@ -24,19 +24,19 @@ const CalendarField = ({ dateString, isClickable, monthList, reservationDate, to
         const reservationAmount = personList.length;
 
         return (
-            <td className={'border p-0'} onChange={() => toggleDate(reservationDate.id)}>
+            <td className={'border p-0 calendar-even-width'} onChange={() => toggleDate(reservationDate.id)}>
                 <label htmlFor={id} className={'w-100 h-100 p-0'}>
                     <input type="checkbox" id={id} checked={selected}/>
                     <div className={reservationsLeft < reservationAmount ? `p-2 date-full w-100` : `p-2 date w-100`}>
                         <p className={'text-end m-0 fs-6'}>{day} <br/> {month}</p> <br/>
-                        <p className={'text-start m-0 lead fs-6 text-muted'}>{reservationDate.reservationAmount} / {reservationDate.reservationLimit}</p>
+                        <p className={'text-start m-0 lead fs-6 text-muted'}>{reservationDate.reservationAmount}/ {reservationDate.reservationLimit}</p>
                     </div>
                 </label>
             </td>
         )
     }
     return (
-        <td className={`p-0 border text-muted bg-light`}>
+        <td className={`p-0 border text-muted bg-light calendar-even-width`}>
             <div className={`p-2 date`}>
                 <p className={'text-end m-0 lead fs-6'}>{day} <br/> {month}</p>
             </div>
