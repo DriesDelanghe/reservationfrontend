@@ -3,20 +3,39 @@ import {FaCalendar, FaClock, FaPlus} from "react-icons/all";
 import {useState} from "react";
 import ReservationInput from "./reservationInput";
 
-const NewOpeningDateField = () => {
+const NewOpeningDateField = ({updateDate, defaultActive}) => {
 
     const [show, setShow] = useState(false)
-    const [dateError, setDateError] = useState(false)
     const [capacity, setCapacity] = useState("0")
     const [openingDate, setOpeningDate] = useState("")
     const [openingHour, setOpeningHour] = useState("")
     const [closingHour, setClosingHour] = useState("")
-    const [activeDate, setActiveDate] = useState(true)
+    const [activeDate, setActiveDate] = useState(defaultActive)
 
 
     const handleClose = () => {
-        console.log("placeholder saving item")
-        setShow(false)
+        if (capacity > 0 && openingDate && openingHour && closingHour) {
+            setShow(false)
+            const dateObject = constructObject()
+            updateDate(dateObject)
+            console.log(`created new date object ${dateObject}`)
+        }else{
+            console.log('something went wrong, data that makes me appear here:' +
+                `\n capacity: ${capacity}, openingDate: ${openingDate}, openingHour: ${openingHour}, closingHour: ${closingHour}`)
+        }
+    }
+
+    const constructObject = () => {
+        return  {
+            id: null,
+            openingDate: openingDate,
+            openingHour: openingHour,
+            closingHour: closingHour,
+            reservationLimit: capacity,
+            reservationAmount: 0,
+            activeDate: activeDate,
+            removed: false
+        }
     }
 
     return (
@@ -43,12 +62,9 @@ const NewOpeningDateField = () => {
                 </Modal.Header>
                 <Modal.Body className={"px-0"}>
                     <div className={`container-fluid mx-0 px-0 d-flex flex-column align-items-center mb-3`}>
-                        {dateError ?
-                            <p className="lead text-danger m-1">Deze dag is al verlopen en kan niet op actief gezet
-                                worden</p> : null}
                         <div className="col-12 mb-3 border-bottom">
                             <div className="form-check form-switch ms-2">
-                                <input type={"checkbox"} className={"form-check-input keep-auto my-2 me-3"} id={"activeDateCheck"}/>
+                                <input type={"checkbox"} className={"form-check-input keep-auto my-2 me-3"} id={"activeDateCheck"} onChange={e => setActiveDate(e.currentTarget.checked)} checked={activeDate}/>
                                 <label htmlFor="activeDateCheck" className={"form-check-label lead"}>
                                     Actieve Reservatie
                                 </label>

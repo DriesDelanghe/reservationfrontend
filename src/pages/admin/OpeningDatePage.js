@@ -50,12 +50,15 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
         dateObject.activeDate ? addToArray(dateObject, setActiveDates, activeDates) : addToArray(dateObject, setInactiveDates, inactiveDates)
     }
 
+    //##TODO save date to the server when id is null, after that save to array
+
     const addToArray = (dateObject, stateSetter, stateArray) => {
         let referenceArray = [...stateArray]
-        setActiveDates(activeDates.filter(date => date.id !== dateObject.id))
-        setInactiveDates(inactiveDates.filter(date => date.id !== dateObject.id))
-
-        referenceArray = [...referenceArray.filter(date => date.id !== dateObject.id)]
+        if (dateObject.id) {
+            setActiveDates(activeDates.filter(date => date.id !== dateObject.id))
+            setInactiveDates(inactiveDates.filter(date => date.id !== dateObject.id))
+            referenceArray = [...referenceArray.filter(date => date.id !== dateObject.id)]
+        }
         referenceArray.push(dateObject)
         referenceArray.sort((a, b) => new Date(a.openingDate).getTime() - new Date(b.openingDate).getTime())
         stateSetter(referenceArray)
@@ -77,14 +80,15 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                          aria-labelledby="panelsStayOpen-headingOne">
                         <div className="accordion-body container-fluid row">
                             <div className="row mx-0">
-                            {activeDates && activeDates[0] ? activeDates.map((activeDate, index) => !activeDate.removed ? <OpeningDateField
-                                    key={activeDate.id}
-                                    dateObject={activeDate}
-                                    updateDate={updateDate}/> : null) :
-                                <p className="lead mt-3">Geen data gevonden</p>}
+                                {activeDates && activeDates[0] ? activeDates.map((activeDate, index) => !activeDate.removed ?
+                                    <OpeningDateField
+                                        key={index}
+                                        dateObject={activeDate}
+                                        updateDate={updateDate}/> : null) :
+                                    <p className="lead mt-3">Geen data gevonden</p>}
                             </div>
                             <div className="row mx-0">
-                                <NewOpeningDateField/>
+                                <NewOpeningDateField key={1} updateDate={updateDate} defaultActive={true}/>
                             </div>
                         </div>
                     </div>
@@ -101,13 +105,19 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                     </h2>
                     <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse"
                          aria-labelledby="panelsStayOpen-headingTwo">
-                        <div className="accordion-body container-fluid row">
+                        <div className="accordion-body container-fluid">
+                            <div className="row mx-0">
                             {inactiveDates && inactiveDates[0] ? inactiveDates.map((activeDate, index) =>
-                                !activeDate.removed ?
-                                    <OpeningDateField
-                                        key={activeDate.id} updateDate={updateDate}
-                                        dateObject={activeDate}/> : null) :
+                                    !activeDate.removed ?
+                                        <OpeningDateField
+                                            key={index} updateDate={updateDate}
+                                            dateObject={activeDate}/> : null) :
                                 <p className="lead mt-3">Geen data gevonden</p>}
+                            </div>
+
+                            <div className="row mx-0">
+                                <NewOpeningDateField key={2} updateDate={updateDate} defaultActive={false}/>
+                            </div>
                         </div>
                     </div>
                 </div>
