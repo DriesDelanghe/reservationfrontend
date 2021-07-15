@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import OpeningDateField from "../../components/admin/openingdatepage/OpeningDateField";
 import {Prompt} from 'react-router-dom'
+import NewOpeningDateField from "../../components/admin/openingdatepage/NewOpeningDateField";
 
 const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWithCsrf}) => {
 
@@ -33,29 +34,17 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
         try {
             fetchActiveDates().then(data => {
                 setActiveDates([...data])
-                console.log("setting active dates to: ", data)
-            }).then( () =>
-            console.log("active dates after setting: ", activeDates)
-            )
+            })
             fetchInactiveDates().then(data => {
                 setInactiveDates(data)
-                console.log("setting inactive dates to: ", data)
-            }).then( () =>
-            console.log("inactive dates after setting: ", inactiveDates)
-            )
+            })
         } catch (e) {
             console.log("an error occurred, ", e)
             setServerError('An error occured while fetching openingdates from the server')
             return
         }
         setShowModal(false)
-        console.log('active dates: ', activeDates)
-        console.log('inactive dates: ', inactiveDates)
-
     }, [])
-
-    useEffect(() => {console.log('When do you change from 24 to 23? ', activeDates)}, [activeDates])
-
 
     const updateDate = (dateObject) => {
         dateObject.activeDate ? addToArray(dateObject, setActiveDates, activeDates) : addToArray(dateObject, setInactiveDates, inactiveDates)
@@ -81,17 +70,22 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                                 data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                                 aria-controls="panelsStayOpen-collapseOne">
                             Actieve reservaties
-                            <p className="m-0 ms-3 lead">aantal: {activeDates.length}</p>
+                            <p className="m-0 ms-3 lead">aantal: {activeDates.filter((dateObject) => !dateObject.removed).length}</p>
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show"
                          aria-labelledby="panelsStayOpen-headingOne">
                         <div className="accordion-body container-fluid row">
-                            {activeDates && activeDates[0] ? activeDates.map((activeDate, index) => <OpeningDateField
+                            <div className="row mx-0">
+                            {activeDates && activeDates[0] ? activeDates.map((activeDate, index) => !activeDate.removed ? <OpeningDateField
                                     key={activeDate.id}
                                     dateObject={activeDate}
-                                    updateDate={updateDate}/>) :
+                                    updateDate={updateDate}/> : null) :
                                 <p className="lead mt-3">Geen data gevonden</p>}
+                            </div>
+                            <div className="row mx-0">
+                                <NewOpeningDateField/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,9 +103,10 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                          aria-labelledby="panelsStayOpen-headingTwo">
                         <div className="accordion-body container-fluid row">
                             {inactiveDates && inactiveDates[0] ? inactiveDates.map((activeDate, index) =>
+                                !activeDate.removed ?
                                     <OpeningDateField
                                         key={activeDate.id} updateDate={updateDate}
-                                        dateObject={activeDate}/>) :
+                                        dateObject={activeDate}/> : null) :
                                 <p className="lead mt-3">Geen data gevonden</p>}
                         </div>
                     </div>

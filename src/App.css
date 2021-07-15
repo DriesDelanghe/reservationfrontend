@@ -19,6 +19,13 @@ input.keep[type=checkbox]{
   height: 1rem;
 }
 
+input.keep-auto[type=checkbox]{
+  position: relative;
+  opacity: 1;
+  width: 2rem;
+  height: 1rem;
+}
+
 /*PREVENT TABLE DATA OF TRIGGERING FUNCTION TWICE*/
 td{
   -webkit-user-select: none; /* Safari */
