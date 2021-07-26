@@ -1,10 +1,14 @@
+import React, {useState} from "react"
+
+const AdminCalendarField = ({date, monthArray}) => {
 
 
-const AdminCalendarField = () => {
 
-    return (
-        <div className="border">
-            <p>This will be a calendar field</p>
-        </div>
+    return ( monthArray[date.getMonth()] && monthArray[date.getMonth()].monthName ?
+        <div className="border calendar-even-width">
+             <p>{`${date.getDate()} ${monthArray[date.getMonth()].monthName}`}</p>
+        </div> : null
     )
 }
+
+export default AdminCalendarField;

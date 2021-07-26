@@ -1,11 +1,26 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import AdminCalendarRow from "./AdminCalendarRow";
 
 
-const AdminCalendar = () => {
+const AdminCalendar = ({}) => {
 
     const [month, setMonth] = useState(new Date().getMonth())
     const [year, setYear] = useState(new Date().getFullYear())
+    const [monthArray, setMonthArray] = useState([])
     const [periodMatrix, setPeriodMatrix] = useState([[]])
+
+    useEffect(() => {
+        fetchMonthArray().then( data => {
+                console.log('monthArray: ', JSON.stringify(data))
+                setMonthArray([...data])
+            }
+        )
+    }, [])
+
+    const fetchMonthArray = async() =>{
+        const res = await fetch("/data/month")
+        return await res.json()
+    }
 
     useEffect(() => {
         const firstEntry = new Date(`${year}-${month + 1}-1`)
@@ -27,9 +42,7 @@ const AdminCalendar = () => {
 
     return (
         periodMatrix.map((array, index) =>
-        <div className="container-fluid row">
-            {array.map((date, index) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}  `)}
-        </div>)
+         <AdminCalendarRow array={array} key={`row`+index} monthArray={monthArray} rowNumber={index}/> )
     )
 }
 
