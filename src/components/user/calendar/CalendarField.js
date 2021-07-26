@@ -1,38 +1,51 @@
 import PropTypes from 'prop-types'
 import {useEffect, useState} from "react";
 
-const CalendarField = ({ dateString, isClickable, monthList, reservationDate, toggleDate, selectedDates, personList }) => {
+const CalendarField = ({dateString, isClickable, monthList, reservationDate, toggleDate, selectedDates, personList}) => {
 
-    const dateDate = new Date(dateString);
-    const day = dateDate.getDate()
-    const month = monthList[dateDate.getMonth()] ? monthList[dateDate.getMonth()].monthName : `jan`;
-    const id = `${day}${month}`
-
+    const [day, setDay] = useState('')
+    const [month, setMonth] = useState('')
     const [selected, setSelected] = useState();
 
     useEffect(() => {
-        if (!!selectedDates.find(selected => new Date(selected.openingDate).getTime() === new Date(dateString).getTime())){
+        const dateDate = new Date(dateString);
+        setDay(dateDate.getDate() + '')
+        if (monthList[dateDate.getMonth()]){
+            const charArray = [...monthList[dateDate.getMonth()].monthName]
+            if  (charArray[2] !== charArray[1]) {
+            setMonth(charArray[0] + charArray[1] + charArray[2])
+            }else{
+                setMonth(charArray[0] + charArray[1] + charArray[3])
+            }
+        }
+    }, [])
+
+
+
+    useEffect(() => {
+        if (!!selectedDates.find(selected => new Date(selected.openingDate).getTime() === new Date(dateString).getTime())) {
             setSelected(true)
             return
         }
         setSelected(false)
     }, [selectedDates, dateString])
 
-    if (isClickable){
+    if (isClickable) {
 
         const reservationsLeft = reservationDate.reservationLimit - reservationDate.reservationAmount;
         const reservationAmount = personList.length;
 
         return (
             <td className={'border p-0 calendar-even-width'} onChange={() => toggleDate(reservationDate.id)}>
-                <label htmlFor={id} className={'w-100 h-100 p-0'}>
-                    <input type="checkbox" id={id} checked={selected}/>
+                <label htmlFor={`${day}${month}`} className={'w-100 h-100 p-0'}>
+                    <input type="checkbox" id={`${day}${month}`} checked={selected}/>
                     <div className={reservationsLeft < reservationAmount ? `p-2 date-full w-100` : `p-2 date w-100`}>
                         <p className={'text-end m-0 fs-6'}>{day} <br/> {month}</p> <br/>
                         <p className={'text-start m-0 lead fs-6 text-muted'}>{reservationDate.reservationAmount}/ {reservationDate.reservationLimit}</p>
                     </div>
                 </label>
             </td>
+
         )
     }
     return (

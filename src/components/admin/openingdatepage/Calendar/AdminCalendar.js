@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import AdminCalendarRow from "./AdminCalendarRow";
+import {FaChevronLeft, FaChevronRight} from "react-icons/all";
 
 
 const AdminCalendar = ({}) => {
@@ -10,25 +11,28 @@ const AdminCalendar = ({}) => {
     const [periodMatrix, setPeriodMatrix] = useState([[]])
 
     useEffect(() => {
-        fetchMonthArray().then( data => {
+        fetchMonthArray().then(data => {
                 console.log('monthArray: ', JSON.stringify(data))
                 setMonthArray([...data])
             }
         )
     }, [])
 
-    const fetchMonthArray = async() =>{
+    const fetchMonthArray = async () => {
         const res = await fetch("/data/month")
         return await res.json()
     }
 
     useEffect(() => {
         const firstEntry = new Date(`${year}-${month + 1}-1`)
-        if (firstEntry.getDay() !== 1) firstEntry.setDate(firstEntry.getDate() - (firstEntry.getDate() + 1))
-        const date = new Date(firstEntry.getTime())
-        console.log(date + '')
+        console.log(firstEntry)
+        console.log(firstEntry.getDate(), 'dateTEst')
+        if (firstEntry.getDay() === 0) firstEntry.setDate(firstEntry.getDate() - 6)
+        if (firstEntry.getDay() !== 1) firstEntry.setDate(firstEntry.getDate() - (firstEntry.getDay() - 1))
+        console.log(firstEntry)
+        let date = new Date(firstEntry.getTime())
         let dateMatrix = []
-        while (date.getMonth() <= month) {
+        while ((date.getMonth() <= month || ((month === 11 || month === 0) && date.getMonth() === 11)) && date.getFullYear() <= year) {
             let dateRow = []
             while (dateRow.length < 7) {
                 dateRow = [...dateRow, new Date(date.getTime())]
@@ -36,13 +40,62 @@ const AdminCalendar = ({}) => {
             }
             dateMatrix = [...dateMatrix, [...dateRow]]
         }
+        console.log(dateMatrix[dateMatrix.length - 1])
         setPeriodMatrix([...dateMatrix])
 
-    }, [month])
+    }, [month, year])
+
+    const addMonth = () => {
+        if (month < 11) {
+            setMonth(month + 1)
+            return
+        }
+        setYear(year + 1)
+        setMonth(0)
+    }
+
+    const subtractMonth = () => {
+        if (month > 0) {
+            setMonth(month - 1)
+            return
+        }
+        setYear(year - 1)
+        setMonth(11)
+    }
 
     return (
-        periodMatrix.map((array, index) =>
-         <AdminCalendarRow array={array} key={`row`+index} monthArray={monthArray} rowNumber={index}/> )
+        monthArray[month] ?
+            <div className="container-fluid">
+                <h3 className="lead fs-5 fw-normal">{year}</h3>
+                <div className={`container-fluid border mb-5 p-0 m-0`}>
+                    <div className="w-100 d-flex justify-content-center align-items-baseline my-2">
+                        <div className={"w-100 d-flex justify-content-start ps-5"} onClick={() => subtractMonth()}>
+                            <FaChevronLeft/>
+                        </div>
+                        <h3 className="display-6 text-center">{monthArray[month].monthName}</h3>
+                        <div className="w-100 d-flex justify-content-end pe-5" onClick={() => addMonth()}>
+                            <FaChevronRight/>
+                        </div>
+                    </div>
+                    <div className="container-fluid row flex-nowrap m-0 p-0 text-center fw-bold">
+                        <div className="border calendar-even-width">Ma</div>
+                        <div className="border calendar-even-width">Di</div>
+                        <div className="border calendar-even-width">Wo</div>
+                        <div className="border calendar-even-width">Do</div>
+                        <div className="border calendar-even-width">Vr</div>
+                        <div className="border calendar-even-width">Za</div>
+                        <div className="border calendar-even-width">Zo</div>
+                    </div>
+                    <div className="container-fluid calendar-grid m-0 p-0">
+                        {
+                            periodMatrix.map((array, index) =>
+                                <AdminCalendarRow array={array} key={`row` + index} monthArray={monthArray}
+                                                  rowNumber={index} month={month}/>)
+                        }
+                    </div>
+                </div>
+            </div>
+            : null
     )
 }
 

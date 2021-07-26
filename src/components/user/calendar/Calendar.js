@@ -5,6 +5,7 @@ import DateOverview from "./DateOverview";
 const Calendar = ({ reservationDates, monthNames, period, toggleDate, selectedDates, personList }) => {
 
     return (
+        reservationDates[0] && reservationDates[0].openingDate ?
         <div className={`container mx-auto mt-5 p-2 border shadow-sm rounded-2`}>
             <table className={`table table-bordered`}>
                 <thead>
@@ -26,9 +27,9 @@ const Calendar = ({ reservationDates, monthNames, period, toggleDate, selectedDa
                 </tbody>
             </table>
             <div className="container mt-3">
-                <DateOverview personList={personList} toggleDate={toggleDate} selectedDates={selectedDates}/>
+                <DateOverview personList={personList} toggleDate={toggleDate} selectedDates={selectedDates} monthList={monthNames}/>
             </div>
-        </div>
+        </div> : null
     )
 }
 
