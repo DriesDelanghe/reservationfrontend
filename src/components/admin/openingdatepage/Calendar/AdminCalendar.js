@@ -25,11 +25,8 @@ const AdminCalendar = ({}) => {
 
     useEffect(() => {
         const firstEntry = new Date(`${year}-${month + 1}-1`)
-        console.log(firstEntry)
-        console.log(firstEntry.getDate(), 'dateTEst')
         if (firstEntry.getDay() === 0) firstEntry.setDate(firstEntry.getDate() - 6)
         if (firstEntry.getDay() !== 1) firstEntry.setDate(firstEntry.getDate() - (firstEntry.getDay() - 1))
-        console.log(firstEntry)
         let date = new Date(firstEntry.getTime())
         let dateMatrix = []
         while ((date.getMonth() <= month || ((month === 11 || month === 0) && date.getMonth() === 11)) && date.getFullYear() <= year) {
@@ -40,7 +37,6 @@ const AdminCalendar = ({}) => {
             }
             dateMatrix = [...dateMatrix, [...dateRow]]
         }
-        console.log(dateMatrix[dateMatrix.length - 1])
         setPeriodMatrix([...dateMatrix])
 
     }, [month, year])

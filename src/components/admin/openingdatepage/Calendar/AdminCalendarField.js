@@ -8,20 +8,14 @@ const AdminCalendarField = ({date, monthArray, month}) => {
     const [monthNumber, setMonthNumber] = useState(date.getMonth())
 
     useEffect(() => {
-        if (date.getDate()) {
             const dateNr = date.getDate()
             setDateNumber(dateNr)
-        }
     }, [date])
 
     useEffect(() => {
-        if (date.getMonth()) {
             const monthNr = date.getMonth()
             setMonthNumber(monthNr)
-        }
     }, [date])
-
-    //#TODO if month is january displays december, fix it
 
     useEffect(() => {
             const charArray = [...monthArray[monthNumber].monthName]
@@ -32,9 +26,9 @@ const AdminCalendarField = ({date, monthArray, month}) => {
             }
     }, [monthNumber])
 
-    return ( monthArray[date.getMonth()] && monthArray[date.getMonth()].monthName ?
-        <div className={date.getMonth() === month ? "border calendar-even-width" : "border calendar-even-width bg-light text-muted"}>
-            {date.getMonth() !== month ?
+    return ( monthArray[monthNumber] ?
+        <div className={monthNumber === month ? "border calendar-even-width" : "border calendar-even-width bg-light text-muted"}>
+            {monthNumber !== month ?
                 <p>{`${dateNumber} \n ${monthShort}`}</p>
                 : <p className={"text-center"}>{`${dateNumber}`}</p>
             }
