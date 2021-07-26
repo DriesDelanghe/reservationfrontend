@@ -95,7 +95,7 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
     }
 
     return (
-        <AdminCalendar fetchWithCsrf={fetchWithCsrf}/>
+        <AdminCalendar openingDateArray={openingDates}/>
     )
 
 

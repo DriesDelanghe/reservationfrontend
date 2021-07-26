@@ -3,7 +3,7 @@ import AdminCalendarRow from "./AdminCalendarRow";
 import {FaChevronLeft, FaChevronRight} from "react-icons/all";
 
 
-const AdminCalendar = ({}) => {
+const AdminCalendar = ({openingDateArray}) => {
 
     const [month, setMonth] = useState(new Date().getMonth())
     const [year, setYear] = useState(new Date().getFullYear())
@@ -86,7 +86,7 @@ const AdminCalendar = ({}) => {
                         {
                             periodMatrix.map((array, index) =>
                                 <AdminCalendarRow array={array} key={`row` + index} monthArray={monthArray}
-                                                  rowNumber={index} month={month}/>)
+                                                  rowNumber={index} month={month} openingDateArray={openingDateArray}/>)
                         }
                     </div>
                 </div>
