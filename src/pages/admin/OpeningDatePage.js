@@ -1,8 +1,5 @@
-import {useEffect, useState} from "react";
-import OpeningDateField from "../../components/admin/openingdatepage/OpeningDateField";
-import NewOpeningDateField from "../../components/admin/openingdatepage/NewOpeningDateField";
-import {Button} from "react-bootstrap";
-import {FaSave} from "react-icons/all";
+import React, {useEffect, useState} from "react";
+import AdminCalendar from "../../components/admin/openingdatepage/Calendar/AdminCalendar";
 
 const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWithCsrf, submitData}) => {
 
@@ -98,6 +95,11 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
     }
 
     return (
+        <AdminCalendar/>
+    )
+
+
+    /* (
         <>
             <div className="float-end p-3">
                 {updatedDates.length > 0 && updatedDates[0].id ?
@@ -162,8 +164,9 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                 </div>
             </div>
         </>
-
     )
+        */
+
 }
 
 export default OpeningDatePage
