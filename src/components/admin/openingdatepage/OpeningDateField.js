@@ -1,23 +1,24 @@
 import {useEffect, useState} from "react";
 import {Card, Button} from "react-bootstrap";
-import { FaBox, FaBoxOpen, FaCalendar, FaClock, FaTrash } from "react-icons/all";
+import {FaBox, FaBoxOpen, FaCalendar, FaClock, FaSave, FaTrash} from "react-icons/all";
 import ReservationInput from "./reservationInput";
 
-const OpeningDateField = ({dateObject, updateDate}) => {
+const OpeningDateField = ({dateObject, updateDate, isUpdated, saveDate}) => {
 
-    const [capacity, setCapacity] = useState(dateObject.reservationLimit)
+    const [capacity, setCapacity] = useState(-1)
     const [capacityError, setCapacityError] = useState(false)
     const [dateError, setDateError] = useState(false)
     const [pastDate, setPastDate] = useState(false)
 
     useEffect(() => {
         let dateToday = new Date();
-        const openingDate = new Date(dateObject.openingDate)
+        const openingDate = new Date(dateObject.openingDate.split(`T`)[0])
         dateToday.setHours(openingDate.getHours())
         if (dateToday.getTime() < openingDate.getTime()){
             setPastDate(true)
         }
-    })
+        setCapacity(dateObject.reservationLimit)
+    }, [])
 
     useEffect(() => {
         const dateFade = async () => {
@@ -34,11 +35,8 @@ const OpeningDateField = ({dateObject, updateDate}) => {
 
     }, [dateError])
 
-    useEffect(() => {
-        updateReservationLimit(capacity)
-    }, [capacity])
-
     const updateReservationLimit = (limit) => {
+        setCapacity(limit)
         if (limit < dateObject.reservationAmount) {
             setCapacityError(true)
             return
@@ -49,7 +47,7 @@ const OpeningDateField = ({dateObject, updateDate}) => {
 
     const updateActiveDate = (active) => {
         if (active !== dateObject.activeDate && !dateObject.activeDate) {
-            const openingsDate = new Date(dateObject.openingDate)
+            const openingsDate = new Date(dateObject.openingDate.split(`T`)[0])
             const date = new Date()
             date.setHours(2, 0, 0, 0)
             if (openingsDate.getTime() < date.getTime()) {
@@ -71,7 +69,7 @@ const OpeningDateField = ({dateObject, updateDate}) => {
         updateDate({...dateObject, openingDate: openingDate})
     }
 
-    const removeDate = (openingDate) => {
+    const removeDate = () => {
         updateDate({...dateObject, removed:true})
     }
 
@@ -80,13 +78,17 @@ const OpeningDateField = ({dateObject, updateDate}) => {
             <Card.Header>
                 <Card.Title>
                     <div className="d-flex justify-content-between align-items-center">
-                        <p className="lead fs-5">Reservatie dag: <br/> {dateObject.openingDate}</p>
+                        <p className="lead fs-5">Reservatie dag: <br/> {dateObject.openingDate.split('T')[0]}</p>
                         <div className="d-flex justify-content-end gap-2">
+                            {isUpdated ? <Button variant={`primary`} onClick={() => saveDate(dateObject)}>
+                                <FaSave fontSize={16}/>
+                                </Button>
+                                : null}
                         {pastDate ? <Button variant={dateObject.activeDate ? "secondary" : "secondary"}
                                  onClick={() => updateActiveDate(!dateObject.activeDate)}>
                             {dateObject.activeDate ? <FaBox fontSize={16}/> : <FaBoxOpen fontSize={16}/>}
                         </Button> : null}
-                        <Button variant={"danger"} onClick={() => removeDate(dateObject)}>
+                        <Button variant={"danger"} onClick={() => removeDate()}>
                             <FaTrash fontSize={16}/>
                         </Button>
                         </div>
@@ -101,16 +103,16 @@ const OpeningDateField = ({dateObject, updateDate}) => {
                     <p className="lead text-danger m-1">Deze dag is al verlopen en kan niet op actief gezet
                         worden</p> : null}
                 <div className="col-12 d-flex justify-content-between ms-auto me-0">
-                    <p className={'lead fs-5 m-0'}>aantal reservaties:</p>
+                    <p className={'lead fs-5 m-0'}>reservaties:</p>
                     <div className={'d-flex flex-nowrap col-6 justify-content-end'}>
                         <p className={'lead fs-5 m-0 me-2'}>{dateObject.reservationAmount} /
                         </p>
-                        <input type="text" value={capacity} className={'form-control w-50 text-center p-1'}
-                               onChange={e => setCapacity(e.target.value)}/>
+                        <input type="text" value={capacity} className={'form-control w-50 text-center p-1 h-auto'}
+                               onChange={e => updateReservationLimit(e.target.value)}/>
                     </div>
                 </div>
                 <div className="col-12">
-                    <ReservationInput value={dateObject.openingDate} type={"date"} text={"Openingsdag:"}
+                    <ReservationInput value={dateObject.openingDate.split(`T`)[0]} type={"date"} text={"Openingsdag:"}
                                       FaSymbol={<FaCalendar/>}
                                       setter={updateOpeningDate}/>
                 </div>

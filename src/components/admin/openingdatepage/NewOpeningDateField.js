@@ -18,7 +18,7 @@ const NewOpeningDateField = ({updateDate, defaultActive}) => {
             setShow(false)
             const dateObject = constructObject()
             updateDate(dateObject)
-            console.log(`created new date object ${dateObject}`)
+            console.log(`created new date object ${JSON.stringify(dateObject)}`)
         }else{
             console.log('something went wrong, data that makes me appear here:' +
                 `\n capacity: ${capacity}, openingDate: ${openingDate}, openingHour: ${openingHour}, closingHour: ${closingHour}`)
@@ -26,9 +26,12 @@ const NewOpeningDateField = ({updateDate, defaultActive}) => {
     }
 
     const constructObject = () => {
+        const date = new Date(openingDate)
+        const month = date.getMonth() + 1 < 10 ? `0` + (date.getMonth() + 1) : date.getMonth() + 1
+        const day = date.getDate() < 10 ? `0` + date.getDate() : date.getDate()
         return  {
             id: null,
-            openingDate: openingDate,
+            openingDate: `${date.getFullYear()}-${month}-${day}`,
             openingHour: openingHour,
             closingHour: closingHour,
             reservationLimit: capacity,

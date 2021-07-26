@@ -24,7 +24,7 @@ const ReservationPage = ({fetchWithCsrf, setActiveDate, setShowModal, setServerE
             const fetchOptions = {
                 method: "GET"
             }
-            const res = await fetchWithCsrf("/data/openingdates", fetchOptions)
+            const res = await fetchWithCsrf("/restricted/openingdates", fetchOptions)
             return await res.json();
         }
         setShowModal(true)

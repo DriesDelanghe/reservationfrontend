@@ -85,7 +85,7 @@ function App() {
     const fetchWithCsrf = async (url, fetchOptions) => {
         const cookie = document.cookie.match(new RegExp('XSRF-TOKEN=([^;]+)'));
         const csrfToken = cookie && cookie[1];
-        console.log(`fetchWithCredentials token=${csrfToken}`);
+        console.log(`fetchWithCredentials token=${csrfToken}\n fetchOptions=${JSON.stringify(fetchOptions)}\n url=${url}`);
         const headers = csrfToken ? {...fetchOptions.headers, 'X-XSRF-TOKEN': csrfToken} : fetchOptions.headers;
         const optionsWithCredentials = {
             ...fetchOptions,
@@ -194,7 +194,7 @@ function App() {
                 <Confirmation />
             </Route>
             <Route path ="/admin/">
-                {credentials.role !== "ADMIN" ? <Redirect to={'/login'}/> : <AdminHomepage credentials={credentials} fetchWithCsrf={fetchWithCsrf} />}
+                {credentials.role !== "ADMIN" ? <Redirect to={'/login'}/> : <AdminHomepage credentials={credentials} fetchWithCsrf={fetchWithCsrf} submitData={submitData} />}
             </Route>
         </Switch>
         {credentials.role === `ANONYMOUS` ? <OffCanvasBottom/> : null}
