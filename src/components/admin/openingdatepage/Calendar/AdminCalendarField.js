@@ -2,10 +2,9 @@ import React, {useEffect, useState} from "react"
 
 //#TODO for some reason the events will not be showed on chrome, only on firefox
 
-const AdminCalendarField = ({date, monthArray, month, openingDates}) => {
+const AdminCalendarField = ({date, monthArray, month, openingDate}) => {
 
 
-    const [openingDate, setOpeningDate] = useState([])
     const [monthShort, setMonthShort] = useState('')
     const [dateNumber, setDateNumber] = useState(date.getDate())
     const [monthNumber, setMonthNumber] = useState(date.getMonth())
@@ -14,14 +13,6 @@ const AdminCalendarField = ({date, monthArray, month, openingDates}) => {
         const dateNr = date.getDate()
         setDateNumber(dateNr)
     }, [date])
-
-    useEffect(() => {
-        if (openingDates[0] && openingDates[0].openingDate) {
-            const openingDateArray = openingDates.filter(dateObject => new Date(dateObject.openingDate).getTime() === new Date(date).getTime())
-            setOpeningDate([...openingDateArray])
-            console.log(openingDateArray)
-        }
-    }, [openingDates])
 
     useEffect(() => {
         const monthNr = date.getMonth()
