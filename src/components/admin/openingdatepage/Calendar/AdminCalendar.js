@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import AdminCalendarRow from "./AdminCalendarRow";
-import {FaChevronLeft, FaChevronRight} from "react-icons/all";
+import {FaCalendar, FaCalendarDay, FaChevronLeft, FaChevronRight} from "react-icons/all";
+import {Button} from "react-bootstrap";
 
 
 const AdminCalendar = ({openingDateArray}) => {
@@ -59,10 +60,20 @@ const AdminCalendar = ({openingDateArray}) => {
         setMonth(11)
     }
 
+    const resetCalendar = () => {
+        setMonth(new Date().getMonth())
+        setYear(new Date().getFullYear())
+    }
+
     return (
         monthArray[month] ?
             <div className="container-fluid">
-                <h3 className="lead fs-5 fw-normal">{year}</h3>
+                <div className="w-100 d-flex justify-content-end">
+                    <Button variant={"light"} onClick={() => resetCalendar()}>
+                        <FaCalendarDay fontSize={24}/>
+                    </Button>
+                </div>
+                    <h3 className="lead fs-5 fw-normal">{year}</h3>
                 <div className={`container-fluid border mb-5 p-0 m-0`}>
                     <div className="w-100 d-flex justify-content-center align-items-baseline my-2">
                         <div className={"w-100 d-flex justify-content-start ps-5"} onClick={() => subtractMonth()}>
@@ -82,7 +93,7 @@ const AdminCalendar = ({openingDateArray}) => {
                         <div className="border calendar-even-width">Za</div>
                         <div className="border calendar-even-width">Zo</div>
                     </div>
-                    <div className="container-fluid calendar-grid m-0 p-0">
+                    <div className="container-fluid m-0 p-0">
                         {
                             periodMatrix.map((array, index) =>
                                 <AdminCalendarRow array={array} key={`row` + index} monthArray={monthArray}

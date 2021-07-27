@@ -70,8 +70,7 @@ td{
   width: calc(100%/7);
 }
 
-.calendar-grid{
-  display: grid;
-  grid-template-rows: repeat(auto-fit, 1fr);
-  height: 75vh;
+.fixed-height{
+  min-height: 15vh;
+  height: auto;
 }
