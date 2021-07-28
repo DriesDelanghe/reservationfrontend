@@ -4,7 +4,7 @@ import {FaCalendar, FaCalendarDay, FaChevronLeft, FaChevronRight} from "react-ic
 import {Button} from "react-bootstrap";
 
 
-const AdminCalendar = ({openingDateArray}) => {
+const AdminCalendar = ({openingDateArray, updateDate}) => {
 
     const [month, setMonth] = useState(new Date().getMonth())
     const [year, setYear] = useState(new Date().getFullYear())
@@ -96,7 +96,7 @@ const AdminCalendar = ({openingDateArray}) => {
                     <div className="container-fluid m-0 p-0">
                         {
                             periodMatrix.map((array, index) =>
-                                <AdminCalendarRow array={array} key={`row` + index} monthArray={monthArray}
+                                <AdminCalendarRow updateDate={updateDate} array={array} key={`row` + index} monthArray={monthArray}
                                                   rowNumber={index} month={month} openingDateArray={openingDateArray}/>)
                         }
                     </div>

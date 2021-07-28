@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Card, Button} from "react-bootstrap";
 import {FaBox, FaBoxOpen, FaCalendar, FaClock, FaSave, FaTrash} from "react-icons/all";
-import ReservationInput from "./reservationInput";
+import ReservationInput from "./Calendar/reservationInput";
 
 const OpeningDateField = ({dateObject, updateDate, isUpdated, saveDate}) => {
 

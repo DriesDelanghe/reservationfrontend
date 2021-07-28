@@ -1,7 +1,7 @@
 import {Button, Card, Modal, Spinner} from "react-bootstrap";
 import {FaCalendar, FaClock, FaPlus} from "react-icons/all";
 import {useState} from "react";
-import ReservationInput from "./reservationInput";
+import ReservationInput from "./Calendar/reservationInput";
 
 const NewOpeningDateField = ({updateDate, defaultActive}) => {
 

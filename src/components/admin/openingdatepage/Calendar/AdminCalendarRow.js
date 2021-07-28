@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import AdminCalendarField from "./AdminCalendarField";
 
 
-const AdminCalendarRow = ({monthArray, array, rowNumber, month, openingDateArray}) => {
+const AdminCalendarRow = ({monthArray, array, rowNumber, month, openingDateArray, updateDate}) => {
 
     const [dateArray, setDateArray] = useState([])
 
@@ -19,7 +19,7 @@ const AdminCalendarRow = ({monthArray, array, rowNumber, month, openingDateArray
                     newDate.setHours(0,0,0,0)
                         return newDate.getTime() === date.getTime()
                     }
-                )}/>
+                )} updateDate={updateDate} />
             ) : null}
         </div>
     )
