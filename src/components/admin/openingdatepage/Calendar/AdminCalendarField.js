@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react"
 
-//#TODO for some reason the events will not be showed on chrome, only on firefox
 
 const AdminCalendarField = ({date, monthArray, month, openingDate}) => {
 

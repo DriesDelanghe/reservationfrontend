@@ -129,7 +129,6 @@ const Reservation = ({
         selectedDates.forEach(dateObject => {
             const amountAllowed = dateObject.reservationLimit - dateObject.reservationAmount;
             if (amountAllowed < people.length) {
-                console.log(`${amountAllowed} is smaller than ${people.length}`)
                 amountExceeded = true;
             }
         })
@@ -153,7 +152,6 @@ const Reservation = ({
             setShowModal(false)
             return
         }
-        console.log(`All data seems right to me!`)
         const reservation = constructReservationObject();
         const res = await addReservation(reservation);
         console.log(res, "server response")
@@ -165,7 +163,6 @@ const Reservation = ({
     const constructReservationObject = () => {
         let object;
         if (reservation && reservation.id) {
-            console.log(`constructing reservation with id`)
             object = {
                 ...reservation,
                 openingDateList: selectedDates,
@@ -173,7 +170,6 @@ const Reservation = ({
                 confirmation: confirmation
             }
         } else {
-            console.log(`constructing new object`)
             object = {
                 id: null,
                 openingDateList: selectedDates,

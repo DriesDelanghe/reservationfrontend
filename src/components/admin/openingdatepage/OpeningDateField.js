@@ -23,13 +23,11 @@ const OpeningDateField = ({dateObject, updateDate, isUpdated, saveDate}) => {
     useEffect(() => {
         const dateFade = async () => {
                 setTimeout(() => {
-                    console.log("setting dateError to false")
                     setDateError(false)
                 }, 4000)
 
         }
         if (dateError){
-            console.log("removing dateError after 1s")
             dateFade()
         }
 

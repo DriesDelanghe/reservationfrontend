@@ -13,7 +13,6 @@ const AdminCalendar = ({openingDateArray}) => {
 
     useEffect(() => {
         fetchMonthArray().then(data => {
-                console.log('monthArray: ', JSON.stringify(data))
                 setMonthArray([...data])
             }
         )
@@ -29,6 +28,7 @@ const AdminCalendar = ({openingDateArray}) => {
         if (firstEntry.getDay() === 0) firstEntry.setDate(firstEntry.getDate() - 6)
         if (firstEntry.getDay() !== 1) firstEntry.setDate(firstEntry.getDate() - (firstEntry.getDay() - 1))
         let date = new Date(firstEntry.getTime())
+        date.setHours(0,0,0,0)
         let dateMatrix = []
         while ((date.getMonth() <= month || ((month === 11 || month === 0) && date.getMonth() === 11)) && date.getFullYear() <= year) {
             let dateRow = []

@@ -23,8 +23,6 @@ function App() {
 
     const addReservation = async (object) => {
         if (!reservations.find(reservation => reservation === object)) {
-            console.log(object)
-            console.log(object.id, `id reservation`)
             const res = await submitData(object, `/data/reservation/${object.id ? object.id : ''}`);
             console.log("server response: ", res)
             if (res && res.ok) {
