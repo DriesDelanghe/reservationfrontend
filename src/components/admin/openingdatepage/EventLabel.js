@@ -20,10 +20,12 @@ const EventLabel = ({openDate, date, dateNumber, monthShort, updateDate, setShow
     return (openingDate ?
             <>
                 <div
-                    className={`w-100 alert ${openingDate.activeDate ? "alert-primary" : "alert-secondary"} m-0 h-auto rounded-2 text-truncate pt-1`}
+                    className={`w-100 alert ${openingDate.activeDate ? "alert-primary" : "alert-secondary"} m-0 h-auto rounded-2 p-0 pt-1`}
                     onClick={() => setShowModal(true)}>
-                    <p className={`small m-0 p-0`}>
+                    <p className={`m-0 p-0 text-center text-truncate`}>
+                        <small>
                             {openingDate.eventName}
+                        </small>
                     </p>
                 </div>
                 <OpeningDateModal updateDate={updateDate} openDate={openingDate} showModal={showModal}

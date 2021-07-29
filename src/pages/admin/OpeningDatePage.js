@@ -55,16 +55,14 @@ const OpeningDatePage = ({setNameAndLink, setServerError, setShowModal, fetchWit
                 })
             })
         }
-        /*addToArray(dateObject, setOpeningDates, openingDates)*/
-
     }
 
     const addToArray = (dateObject, stateSetter, stateArray) => {
         if (dateObject.id != null) {
             let referenceArray = [...stateArray]
-            setOpeningDates(openingDates.filter(date => date.id !== dateObject.id))
             referenceArray = [...referenceArray.filter(date => date.id !== dateObject.id)]
-            referenceArray.push(dateObject)
+            referenceArray = [...referenceArray, dateObject]
+            referenceArray = [...referenceArray.filter(date => !date.removed)]
             referenceArray.sort((a, b) => new Date(a.openingDate).getTime() - new Date(b.openingDate).getTime())
             stateSetter(referenceArray)
             return

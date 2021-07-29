@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import ReservationInput from "./reservationInput";
-import {FaCalendar, FaClock} from "react-icons/all";
+import {FaCalendar, FaClock, FaTrash} from "react-icons/all";
 
 
 const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal, date}) => {
@@ -68,6 +68,13 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
         } else {
             setErrorMessage("Alle velden moeten ingevuld zijn")
         }
+    }
+
+    const handleRemove = () => {
+        const dateObject = constructObject();
+        dateObject.removed = true
+        setShowModal(false)
+        updateDate(dateObject)
     }
 
     const constructObject = () => {
@@ -141,6 +148,12 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
                 </div>
             </Modal.Body>
             <Modal.Footer>
+                {openDate && openDate.id  ?
+                <Button variant={"danger"} className={"me-auto ms-0"} onClick={() => handleRemove()}>
+                    Remove
+                </Button>
+                    : null
+                }
                 <Button variant="success" onClick={() => handleClose()}>
                     Save
                 </Button>

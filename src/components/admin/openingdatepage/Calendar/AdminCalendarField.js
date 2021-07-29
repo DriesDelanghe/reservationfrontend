@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
-import EventLabel from "./EventLabel";
-import OpeningDateModal from "./OpeningDateModal";
+import EventLabel from "../EventLabel";
+import OpeningDateModal from "../OpeningDateModal";
 
 
 const AdminCalendarField = ({date, monthArray, month, openingDate, updateDate}) => {
@@ -51,7 +51,7 @@ const AdminCalendarField = ({date, monthArray, month, openingDate, updateDate}) 
                                     dateNumber={dateNumber}
                                     monthShort={monthShort}/>
                     ) : null}
-                    <div className="w-100 h-100" onClick={() => setShowModal(true)}>
+                    <div className="flex-fill" onClick={() => setShowModal(true)}>
 
                     </div>
             </div>
