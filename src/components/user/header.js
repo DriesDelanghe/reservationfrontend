@@ -11,7 +11,7 @@ const Header = ({credentials, doLogout}) => {
         history.push('/logout')
     }
 
-    return <header className='position-sticky top-0 w-100 bg-light border shadow-sm' style={{zIndex:2048}}>
+    return <header className='position-sticky top-0 w-100 bg-light border shadow-sm' style={{zIndex:1024}}>
         <nav className="navbar navbar-light bg-light">
             <div className="container-fluid d-flex justify-content-between">
                 <Link to="/" className="navbar-brand">Tjok Hove</Link>
