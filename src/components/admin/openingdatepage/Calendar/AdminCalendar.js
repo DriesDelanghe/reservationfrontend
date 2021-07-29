@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import AdminCalendarRow from "./AdminCalendarRow";
 import {FaCalendar, FaCalendarDay, FaChevronLeft, FaChevronRight} from "react-icons/all";
 import {Button} from "react-bootstrap";
+import OpeningDateModal from "../OpeningDateModal";
 
 
 const AdminCalendar = ({openingDateArray, updateDate}) => {
@@ -10,6 +11,10 @@ const AdminCalendar = ({openingDateArray, updateDate}) => {
     const [year, setYear] = useState(new Date().getFullYear())
     const [monthArray, setMonthArray] = useState([])
     const [periodMatrix, setPeriodMatrix] = useState([[]])
+    const [showModal, setShowModal] = useState(false)
+    const [dateOpening, setDateOpening] = useState("")
+    const [openDate, setOpenDate] = useState({})
+    const [title, setTitle] = useState("")
 
     useEffect(() => {
         fetchMonthArray().then(data => {
@@ -96,11 +101,16 @@ const AdminCalendar = ({openingDateArray, updateDate}) => {
                     <div className="container-fluid m-0 p-0">
                         {
                             periodMatrix.map((array, index) =>
-                                <AdminCalendarRow updateDate={updateDate} array={array} key={`row` + index} monthArray={monthArray}
-                                                  rowNumber={index} month={month} openingDateArray={openingDateArray}/>)
+                                <AdminCalendarRow array={array} key={`row` + index} monthArray={monthArray}
+                                                  rowNumber={index} month={month} openingDateArray={openingDateArray}
+                                setShowModal={setShowModal} setDateOpening={setDateOpening} setOpenDate={setOpenDate}
+                                setTitle={setTitle}/>)
                         }
                     </div>
                 </div>
+                <OpeningDateModal showModal={showModal} setShowModal={setShowModal} updateDate={updateDate}
+                                  date={dateOpening} openDate={openDate}
+                                  title={title}/>
             </div>
             : null
     )

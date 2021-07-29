@@ -2,10 +2,10 @@ import React, {useEffect, useState} from "react";
 import OpeningDateModal from "./OpeningDateModal";
 
 
-const EventLabel = ({openDate, date, dateNumber, monthShort, updateDate, setShowModalField}) => {
+const EventLabel = ({openDate, date, dateNumber, monthShort, setDateOpening,
+                    setOpenDate, setShowModal, setTitle}) => {
 
     const [openingDate, setOpeningDate] = useState()
-    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         setOpeningDate(openDate)
@@ -17,23 +17,25 @@ const EventLabel = ({openDate, date, dateNumber, monthShort, updateDate, setShow
             `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`
     }
 
+    const openModal = () => {
+        setTitle(`Nieuwe openingsdag ${dateNumber} ${monthShort} ${date.getFullYear()} aanmaken`)
+        setOpenDate(null)
+        const dateString = formatDate()
+        setDateOpening(dateString)
+        setShowModal(true)
+        setOpenDate(openDate)
+    }
+
     return (openingDate ?
-            <>
                 <div
                     className={`w-100 alert ${openingDate.activeDate ? "alert-primary" : "alert-secondary"} m-0 h-auto rounded-2 p-0 pt-1`}
-                    onClick={() => setShowModal(true)}>
+                    onClick={() => openModal()}>
                     <p className={`m-0 p-0 text-center text-truncate`}>
                         <small>
                             {openingDate.eventName}
                         </small>
                     </p>
                 </div>
-                <OpeningDateModal updateDate={updateDate} openDate={openingDate} showModal={showModal}
-                                  title={openingDate ?
-                                      `Openingsdag ${dateNumber} ${monthShort} ${date.getFullYear()} aanpassen` :
-                                      `Nieuwe openingsdag ${dateNumber} ${monthShort} ${date.getFullYear()} aanmaken`}
-                                  setShowModal={setShowModal} date={() => formatDate()}/>
-            </>
             : null
     )
 }

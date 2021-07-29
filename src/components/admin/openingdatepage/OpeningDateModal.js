@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import ReservationInput from "./reservationInput";
 import {FaCalendar, FaClock, FaTrash} from "react-icons/all";
+import DateDeleteModal from "./DateDeleteModal";
 
 
 const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal, date}) => {
@@ -14,12 +15,7 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
     const [activeDate, setActiveDate] = useState(true)
     const [eventName, setEventName] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
-
-    useEffect(() => {
-        if (openDate) {
-            setOpeningDate(openDate)
-        }
-    }, [openDate])
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     useEffect(() => {
         setShow(showModal)
@@ -28,31 +24,41 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
     useEffect(() => {
         if (openDate) {
             setCapacity(openDate.reservationLimit)
+            return
         }
+        setCapacity("0")
     }, [openDate])
 
     useEffect(() => {
         if (openDate) {
             setOpeningHour(openDate.openingHour)
+            return
         }
+        setOpeningHour("")
     }, [openDate])
 
     useEffect(() => {
         if (openDate) {
             setClosingHour(openDate.closingHour)
+            return
         }
+        setClosingHour("")
     }, [openDate])
 
     useEffect(() => {
         if (openDate) {
             setActiveDate(openDate.activeDate)
+            return
         }
+        setActiveDate(true)
     }, [openDate])
 
     useEffect(() => {
         if (openDate) {
             setEventName(openDate.eventName)
+            return
         }
+        setEventName("")
     }, [openDate])
 
     useEffect(() => {
@@ -92,7 +98,13 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
         }
     }
 
+    const handleDelete = () => {
+        setShowModal(false)
+        setShowDeleteModal(true)
+    }
+
     return (
+        <>
         <Modal show={show} size="lg"
                aria-labelledby="contained-modal-title-vcenter"
                centered={true} onHide={() => setShowModal(false)}>
@@ -149,7 +161,7 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
             </Modal.Body>
             <Modal.Footer>
                 {openDate && openDate.id  ?
-                <Button variant={"danger"} className={"me-auto ms-0"} onClick={() => handleRemove()}>
+                <Button variant={"danger"} className={"me-auto ms-0"} onClick={() => handleDelete()}>
                     Remove
                 </Button>
                     : null
@@ -162,6 +174,9 @@ const OpeningDateModal = ({openDate, title, updateDate, showModal, setShowModal,
                 </Button>
             </Modal.Footer>
         </Modal>
+            <DateDeleteModal setShowModal={setShowDeleteModal} showModal={showDeleteModal} dateObjectBuilder={constructObject}
+                             objectDelete={handleRemove} setShowPreviousModal={setShowModal}/>
+            </>
     )
 }
 
