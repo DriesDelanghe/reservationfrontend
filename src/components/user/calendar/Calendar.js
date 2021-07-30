@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import CalendarRow from "./CalendarRow";
 import DateOverview from "./DateOverview";
 
+//#TODO rework entire calendar for user, old one is not compatible with new working style
+
 const Calendar = ({ reservationDates, monthNames, period, toggleDate, selectedDates, personList }) => {
 
     return (
