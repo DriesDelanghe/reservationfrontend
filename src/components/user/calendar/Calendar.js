@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import CalendarRow from "./CalendarRow";
+import CalendarRow from "../newcalendar/CalendarRow";
 import DateOverview from "./DateOverview";
 
 //#TODO rework entire calendar for user, old one is not compatible with new working style

@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types'
 import CalendarField from "./CalendarField";
+import React from "react";
 
-const CalendarRow = ({dates, referenceList, monthList, toggleDate, selectedDates, personList }) => {
+const CalendarRow = ({dates, referenceList, monthList, toggleDate, selectedDates, personList, monthNumber }) => {
 
     return (
-        <tr>
+        <div className={'container-fluid row flex-nowrap m-0 p-0 fixed-height'}>
             {dates.map((date, index) => <CalendarField key={index} monthList={monthList} dateString={date}
-                isClickable={!!referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
                 reservationDate={referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
-                toggleDate={toggleDate} selectedDates={selectedDates} personList={personList}/>)}
-        </tr>
+                toggleDate={toggleDate} selectedDates={selectedDates} personList={personList} monthNumber={monthNumber}/>)}
+        </div>
     )
 };
 

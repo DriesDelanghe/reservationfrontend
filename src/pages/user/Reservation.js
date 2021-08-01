@@ -1,10 +1,11 @@
-import {useState, useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import NameComponent from '../../components/user/NameComponent.js'
 import Calendar from '../../components/user/calendar/Calendar'
 import EmailComponent from "../../components/user/EmailComponent";
 import ErrorMessage from "../../components/user/ErrorMessage";
 import ModalServerLoad from "../../components/user/ModalServerLoad";
 import {useHistory} from "react-router-dom";
+import CalendarFrame from "../../components/user/newcalendar/CalendarFrame";
 
 const Reservation = ({
                          addReservation,
@@ -209,9 +210,11 @@ const Reservation = ({
                            setLastName={setLastName}
                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
-            <Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
+            {/*<Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
                       toggleDate={toggleDate} selectedDates={selectedDates} personList={people}
-                      setDateFull={setDateFull}/>
+                      setDateFull={setDateFull}/>*/}
+            <CalendarFrame personList={people} selectedDates={selectedDates} toggleDate={toggleDate}
+                           reservationDates={reservationDates} monthNamesFetched={monthNames}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
             {emailFormatError ? <ErrorMessage text={`De opgegeven email heeft geen geldig formaat`}/> : null}
             <EmailComponent email={email} onChangeEmail={onChangeEmail} confirmation={confirmation}
