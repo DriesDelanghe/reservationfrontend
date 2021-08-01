@@ -7,7 +7,7 @@ const CalendarRow = ({dates, referenceList, monthList, toggleDate, selectedDates
     return (
         <div className={'container-fluid row flex-nowrap m-0 p-0 fixed-height'}>
             {dates.map((date, index) => <CalendarField key={index} monthList={monthList} dateString={date}
-                reservationDate={referenceList.find(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
+                reservationDate={referenceList.filter(object => new Date(object.openingDate).getTime() === new Date(date).getTime())}
                 toggleDate={toggleDate} selectedDates={selectedDates} personList={personList} monthNumber={monthNumber}/>)}
         </div>
     )

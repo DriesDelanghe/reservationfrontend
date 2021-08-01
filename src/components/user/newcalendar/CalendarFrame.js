@@ -1,7 +1,9 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { FaChevronLeft, FaChevronRight} from "react-icons/all";
 import CalendarRow from "./CalendarRow";
+import DateOverview from "../calendar/DateOverview";
 
+//#TODO display modal or something if the date is already full
 
 const CalendarFrame = ( {monthNamesFetched, reservationDates, toggleDate, selectedDates, personList}) => {
 
@@ -86,6 +88,9 @@ const CalendarFrame = ( {monthNamesFetched, reservationDates, toggleDate, select
                                 )
                         }
                     </div>
+                </div>
+                <div className="container mt-3">
+                    <DateOverview personList={personList} toggleDate={toggleDate} selectedDates={selectedDates} monthList={monthNames}/>
                 </div>
             </div>
     )

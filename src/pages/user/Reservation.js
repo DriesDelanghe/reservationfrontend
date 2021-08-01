@@ -101,8 +101,9 @@ const Reservation = ({
     }
 
     const toggleDate = (id) => {
-        if (!selectedDates.find(object => object.id === id)) {
+        if (!(selectedDates && selectedDates[0] && selectedDates[0].id) || !selectedDates.find(object => object.id === id)) {
             const newDate = reservationDates.find(object => object.id === id)
+            console.log(`new date: ${JSON.stringify(newDate)}`)
             setSelectedDatesError(false);
             const sorted = [...selectedDates, newDate]
             sorted.sort(compareSelectedDates)
@@ -210,9 +211,6 @@ const Reservation = ({
                            setLastName={setLastName}
                            nameNotEmpty={nameNotEmpty} setNameNotEmpty={setNameNotEmpty}/>
             {selectedDatesError ? <ErrorMessage text={`Er moet minstens 1 datum worden aangeduid`}/> : null}
-            {/*<Calendar reservationDates={reservationDates} monthNames={monthNames} period={period}
-                      toggleDate={toggleDate} selectedDates={selectedDates} personList={people}
-                      setDateFull={setDateFull}/>*/}
             <CalendarFrame personList={people} selectedDates={selectedDates} toggleDate={toggleDate}
                            reservationDates={reservationDates} monthNamesFetched={monthNames}/>
             {emailError ? <ErrorMessage text={`Gelieve een email adres in te vullen`}/> : null}
